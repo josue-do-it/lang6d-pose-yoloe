@@ -1,27 +1,13 @@
 # Open Vocabulary 6D Object Pose Estimation using YOLOE
 Research project exploring open-vocabulary object detection and 6D pose estimation by combining YOLOE with model-free pose estimation methods for robotic manipulation of unseen objects.
-
-
-# Proposal 1
-
-## Title
-**Open-vocabulary object pose estimation using YOLOE**  
-*Josué Romaric Edou*
-
 ---
-
-## Theme
 Computer Vision
-
 ---
-
 ## Prerequisites
-
 - Python
 - PyTorch
 - Basic Math: Linear algebra (transformation matrices) and deep learning fundamentals
 - Asset: Experience with CUDA and OpenCV
-
 ---
 
 ## Project Description
@@ -102,5 +88,17 @@ https://sites.google.com/view/taeyeop-lee/any6d
 Review Paper 1  
 https://arxiv.org/pdf/2405.07801
 
+
+
+# Reading Schedule
+
+| Date | Week | Paper | Link | Status | Notes |
+|------|------|-------|------|--------|-------|
+| 14-03-2026 | Week 1 | [A Review of 6D Object Pose Estimation](https://arxiv.org/pdf/2405.07801) | PDF | ⬜ Not started | [Notes](notes/pose_estimation_review_2024.md) |
+| 16-03-2026 | Week 1 | [Review of Object Pose Estimation Methods (MDPI Sensors)](https://www.mdpi.com/1424-8220/24/4/1076) | PDF | ⬜ Not started | [Notes](notes/pose_estimation_review_mdpi.md) |
+| 18-03-2026 | Week 2 | [YOLOE: Real-Time Open-Vocabulary Object Detection](https://arxiv.org/pdf/2503.07465) | PDF | ⬜ Not started | [Notes](notes/yoloe_paper.md) |
+| 20-03-2026 | Week 2 | [YOLOE Documentation (Ultralytics)](https://docs.ultralytics.com/models/yoloe/) | Web | ⬜ Not started | [Notes](notes/yoloe_documentation.md) |
+| 22-03-2026 | Week 3 | [Any6D: Model-Free 6D Object Pose Estimation](https://sites.google.com/view/taeyeop-lee/any6d) | Web | ⬜ Not started | [Notes](notes/any6d_paper.md) |
+| 24-03-2026 | Week 3 | [Any6D GitHub Repository](https://github.com/taeyeopl/any6d) | GitHub | ⬜ Not started | [Notes](notes/any6d_code.md) |
 Review Paper 2  
-https://www.mdpi.com/1424-8220/24/4/1076
+https://www.mdpi.com/1424-8220/24/4/1
