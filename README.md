@@ -48,11 +48,11 @@ The pipeline will be validated by:
 ---
 # Reading Schedule
 
-| Date | Week | Paper | Link | Status | Notes |
-|------|------|-------|------|--------|-------|
-| 14-03-2026 | Week 1 | [Deep Learning-Based Object Pose Estimation: A Comprehensive Survey](https://arxiv.org/pdf/2405.07801) | PDF | ⬜ Not started | [Notes](notes/pose_estimation_review_2024.md) |
-| 16-03-2026 | Week 1 | [A Survey of 6DoF Object Pose Estimation Methods for Different Application Scenarios](https://www.mdpi.com/1424-8220/24/4/1076) | PDF | ⬜ Not started | [Notes](notes/pose_estimation_review_mdpi.md) |
-| 18-03-2026 | Week 2 | [YOLOE: Real-Time Open-Vocabulary Object Detection](https://arxiv.org/pdf/2503.07465) | PDF | ⬜ Not started | [Notes](notes/yoloe_paper.md) |
-| 20-03-2026 | Week 2 | [Ultralytics YOLO Docs](https://docs.ultralytics.com/models/yoloe/) | Web | ⬜ Not started | [Notes](notes/yoloe_documentation.md) |
-| 22-03-2026 | Week 3 | [Any6D: Model-free 6D Pose Estimation of Novel Objects CVPR 2025](https://sites.google.com/view/taeyeop-lee/any6d) | Web | ⬜ Not started | [Notes](notes/any6d_paper.md) |
-| 24-03-2026 | Week 3 | [Any6D ](https://github.com/taeyeopl/any6d) | GitHub | ⬜ Not started | [Notes](notes/any6d_code.md) |
+| Date | Paper | Notes |
+|------|-------|--------|
+| 14-03-2026 | [Deep Learning-Based Object Pose Estimation: A Comprehensive Survey](https://arxiv.org/pdf/2405.07801) | [Notes](notes/pose_estimation_review_2024.md) |
+| 16-03-2026 | [A Survey of 6DoF Object Pose Estimation Methods for Different Application Scenarios](https://www.mdpi.com/1424-8220/24/4/1076) | [Notes](notes/pose_estimation_review_mdpi.md) |
+| 18-03-2026 |  [YOLOE: Real-Time Open-Vocabulary Object Detection](https://arxiv.org/pdf/2503.07465) |  [Notes](notes/yoloe_paper.md) |
+| 20-03-2026 |  [Ultralytics YOLO Docs](https://docs.ultralytics.com/models/yoloe/) |  [Notes](notes/yoloe_documentation.md) |
+| 22-03-2026 |  [Any6D: Model-free 6D Pose Estimation of Novel Objects CVPR 2025](https://sites.google.com/view/taeyeop-lee/any6d) |  [Notes](notes/any6d_paper.md) |
+| 24-03-2026 | [Any6D ](https://github.com/taeyeopl/any6d) |  [Notes](notes/any6d_code.md) |
