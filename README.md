@@ -21,9 +21,7 @@ The pipeline will work as follows:
    - This 2D output will serve as the input for a **model-free pose estimation method** (such as Any6D).
 
 3. **6D pose regression**
-
-The pose estimator will regress the object’s **6D pose**:
-This capability is critical in **robotics for the accurate manipulation of unseen objects**.
+The pose estimator will regress the object’s 6D pose: This capability is critical in robotics for the accurate manipulation of unseen objects.
 ---
 
 ## Project Phases
@@ -47,38 +45,14 @@ The pipeline will be validated by:
 - Providing an **image input**
 - Running the model
 - **Verifying the predicted 6D pose**
-
 ---
-
-## Useful Links
-
-### YOLOE
-
-YOLOE Paper  
-https://arxiv.org/pdf/2503.07465
-
-YOLOE Implementation (recommended)  
-https://docs.ultralytics.com/models/yoloe/
-
-YOLOE Original Repository  
-https://github.com/THU-MIG/yoloe
-
----
-### Any6D
-https://sites.google.com/view/taeyeop-lee/any6d
----
-### Review Papers (Object Pose Estimation)
-https://arxiv.org/pdf/2405.07801
-
 # Reading Schedule
 
 | Date | Week | Paper | Link | Status | Notes |
 |------|------|-------|------|--------|-------|
-| 14-03-2026 | Week 1 | [A Review of 6D Object Pose Estimation](https://arxiv.org/pdf/2405.07801) | PDF | ⬜ Not started | [Notes](notes/pose_estimation_review_2024.md) |
-| 16-03-2026 | Week 1 | [Review of Object Pose Estimation Methods (MDPI Sensors)](https://www.mdpi.com/1424-8220/24/4/1076) | PDF | ⬜ Not started | [Notes](notes/pose_estimation_review_mdpi.md) |
+| 14-03-2026 | Week 1 | [Deep Learning-Based Object Pose Estimation: A Comprehensive Survey](https://arxiv.org/pdf/2405.07801) | PDF | ⬜ Not started | [Notes](notes/pose_estimation_review_2024.md) |
+| 16-03-2026 | Week 1 | [A Survey of 6DoF Object Pose Estimation Methods for Different Application Scenarios](https://www.mdpi.com/1424-8220/24/4/1076) | PDF | ⬜ Not started | [Notes](notes/pose_estimation_review_mdpi.md) |
 | 18-03-2026 | Week 2 | [YOLOE: Real-Time Open-Vocabulary Object Detection](https://arxiv.org/pdf/2503.07465) | PDF | ⬜ Not started | [Notes](notes/yoloe_paper.md) |
-| 20-03-2026 | Week 2 | [YOLOE Documentation (Ultralytics)](https://docs.ultralytics.com/models/yoloe/) | Web | ⬜ Not started | [Notes](notes/yoloe_documentation.md) |
-| 22-03-2026 | Week 3 | [Any6D: Model-Free 6D Object Pose Estimation](https://sites.google.com/view/taeyeop-lee/any6d) | Web | ⬜ Not started | [Notes](notes/any6d_paper.md) |
-| 24-03-2026 | Week 3 | [Any6D GitHub Repository](https://github.com/taeyeopl/any6d) | GitHub | ⬜ Not started | [Notes](notes/any6d_code.md) |
-Review Paper 2  
-https://www.mdpi.com/1424-8220/24/4/1
+| 20-03-2026 | Week 2 | [Ultralytics YOLO Docs](https://docs.ultralytics.com/models/yoloe/) | Web | ⬜ Not started | [Notes](notes/yoloe_documentation.md) |
+| 22-03-2026 | Week 3 | [Any6D: Model-free 6D Pose Estimation of Novel Objects CVPR 2025](https://sites.google.com/view/taeyeop-lee/any6d) | Web | ⬜ Not started | [Notes](notes/any6d_paper.md) |
+| 24-03-2026 | Week 3 | [Any6D ](https://github.com/taeyeopl/any6d) | GitHub | ⬜ Not started | [Notes](notes/any6d_code.md) |
