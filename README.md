@@ -1,9 +1,7 @@
 # Open Vocabulary 6D Object Pose Estimation using YOLOE
+
 Research project exploring open-vocabulary object detection and 6D pose estimation by combining YOLOE with model-free pose estimation methods for robotic manipulation of unseen objects.
----
-Computer Vision
----
-## Prerequisites
+## Tools
 - Python
 - PyTorch
 - Basic Math: Linear algebra (transformation matrices) and deep learning fundamentals
@@ -12,11 +10,7 @@ Computer Vision
 
 ## Project Description
 
-In this project, the student will integrate a state-of-the-art object detection method with a pose estimation framework to determine the **6D pose of novel objects**.
-
-The proposed detection method is **YOLOE**, a real-time open-vocabulary detector that identifies objects based on vision and simple text prompts. The YOLOE model is publicly available and ready to be used as is.
-
-The primary technical challenge is using YOLOE in a **"frozen" (off-the-shelf)** manner to drive a downstream **6D pose estimator**.
+In this project, we  will integrate a state-of-the-art object detection method with a pose estimation framework to determine the **6D pose of novel objects**. The proposed detection method is **YOLOE**, a real-time open-vocabulary detector that identifies objects based on vision and simple text prompts. The YOLOE model is publicly available and ready to be used as is.The primary technical challenge is using YOLOE in a **"frozen" (off-the-shelf)** manner to drive a downstream **6D pose estimator**.
 
 The pipeline will work as follows:
 
@@ -29,14 +23,10 @@ The pipeline will work as follows:
 3. **6D pose regression**
 
 The pose estimator will regress the object’s **6D pose**:
-
-
 This capability is critical in **robotics for the accurate manipulation of unseen objects**.
-
 ---
 
 ## Project Phases
-
 The project includes the following phases:
 
 ### 1. Understanding key concepts
@@ -54,7 +44,6 @@ The project includes the following phases:
 - Produce a **6D pose result**
 
 The pipeline will be validated by:
-
 - Providing an **image input**
 - Running the model
 - **Verifying the predicted 6D pose**
@@ -75,20 +64,11 @@ YOLOE Original Repository
 https://github.com/THU-MIG/yoloe
 
 ---
-
 ### Any6D
-
-Any6D Website (paper and code)  
 https://sites.google.com/view/taeyeop-lee/any6d
-
 ---
-
 ### Review Papers (Object Pose Estimation)
-
-Review Paper 1  
 https://arxiv.org/pdf/2405.07801
-
-
 
 # Reading Schedule
 
