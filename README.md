@@ -56,3 +56,14 @@ The pipeline will be validated by:
 | 20-03-2026 |  [Ultralytics YOLO Docs](https://docs.ultralytics.com/models/yoloe/) |  [Notes](notes/yoloe_documentation.md) |
 | 22-03-2026 |  [Any6D: Model-free 6D Pose Estimation of Novel Objects CVPR 2025](https://sites.google.com/view/taeyeop-lee/any6d) |  [Notes](notes/any6d_paper.md) |
 | 24-03-2026 | [Any6D ](https://github.com/taeyeopl/any6d) |  [Notes](notes/any6d_code.md) |
+
+
+
+## Tasks
+-  Setup  of master's project workflow 
+
+- installation of requirement [ python 3.11.8 , Vitual environment "venv" , install git + gcloud sdk and vs code extensions (pylance , jupyter, remote -ssh, remote explorer , git lens, github copilot ) ]
+
+- package : Install pytorch (CUDA 12.1) for GCP T4 /100 drivers, and scientific + utility packages
+
+- Installation of YOLOE 

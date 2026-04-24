@@ -1,0 +1,14 @@
+master_env/
+.venv/
+*.pt
+*.ckpt
+*.bin
+*.pth
+__pycache__/
+*.pyc
+
+*.safetensors
+
+# Outputs
+notebooks/outputs/
+.env
