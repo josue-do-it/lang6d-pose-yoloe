@@ -13,3 +13,6 @@ __pycache__/
 # Outputs
 notebooks/outputs/
 .env
+notebooks/*.ts
+
+Any6D/
