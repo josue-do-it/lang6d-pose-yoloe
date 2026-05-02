@@ -66,4 +66,209 @@ The pipeline will be validated by:
 
 - package : Install pytorch (CUDA 12.1) for GCP T4 /100 drivers, and scientific + utility packages
 
-- Installation of YOLOE 
+# Installation of YOLOE 
+
+To start , clone the repo and run Setup
+
+```bash
+chmod +x setup_master_env.sh
+bash setup_master_env.sh
+```
+
+
+---
+# Open Vocabulary 6D Pose Estimation with YOLOE
+
+This project combines **YOLOE** (open vocabulary object detection) with **Any6D** (6D pose estimation) to enable zero-shot object detection and precise pose estimation.
+
+---
+
+## Project Structure
+
+```
+open-vocabulary-6d-pose-yoloe/
+├── Any6D/                          # 6D pose estimation module
+│   ├── foundationpose/             # FoundationPose model
+│   │   └── weights/
+│   │       ├── 2024-01-11-20-02-45/
+│   │       └── 2023-10-28-18-33-37/
+│   ├── sam2/
+│   │   └── checkpoints/
+│   │       └── sam2.1_hiera_large.pt
+│   ├── instantmesh/
+│   │   └── ckpts/
+│   │       ├── diffusion_pytorch_model.bin
+│   │       └── instant_mesh_large.ckpt
+│   ├── Dockerfile
+│   └── docker-compose.yml
+├── notebooks/                      # Jupyter notebooks
+├── images/                         # Test images
+├── master_env/                     # Python virtual environment
+├── setup_master_env.sh             # Setup script for YOLOE env
+├── setup_any6d.sh                  # Setup script for Any6D + Docker
+└── README.md
+```
+
+---
+
+## Requirements
+
+### System
+- Ubuntu 22.04
+- NVIDIA GPU (L4 / T4 / RTX 30xx+)
+- CUDA 12.1+
+- Docker + NVIDIA Container Toolkit
+- Python 3.10+
+
+### Cloud (Recommended)
+- Google Cloud VM with NVIDIA L4 GPU
+- Machine type: `g2-standard-4` (4 vCPUs, 16GB RAM, 24GB VRAM)
+
+---
+
+## Installation
+
+### Step 1 — Install Docker on the VM
+
+```bash
+sudo apt-get update && sudo apt-get install -y docker.io docker-compose-v2
+sudo systemctl start docker && sudo systemctl enable docker
+sudo usermod -aG docker $USER
+newgrp docker
+
+# NVIDIA Container Toolkit
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list \
+  | sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' \
+  | sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
+sudo nvidia-ctk runtime configure --runtime=docker
+sudo systemctl restart docker
+
+# Verify GPU
+docker run --rm --gpus all nvidia/cuda:12.1.1-base-ubuntu22.04 nvidia-smi
+```
+
+---
+
+### Step 2 — Clone the project
+
+```bash
+git clone https://github.com/josue-do-it/open-vocabulary-6d-pose-yoloe.git
+cd open-vocabulary-6d-pose-yoloe
+```
+
+---
+
+### Step 3 — Setup YOLOE environment
+
+```bash
+# Install python3-venv if needed
+sudo apt install python3.10-venv -y
+
+# Run setup script
+bash setup_master_env.sh
+
+# Activate environment
+source master_env/bin/activate
+```
+
+---
+
+### Step 4 — Setup Any6D + Docker
+
+```bash
+# This script will:
+# - Clone Any6D
+# - Create checkpoint directories
+# - Download SAM2, InstantMesh, FoundationPose weights
+# - Build the Docker image
+bash setup_any6d.sh
+```
+
+---
+
+## Usage
+
+### YOLOE — Open Vocabulary Detection
+
+```bash
+source master_env/bin/activate
+jupyter lab --ip=0.0.0.0 --port=8888 --no-browser
+```
+
+Open `notebooks/YOLOE_notebook.ipynb` in Jupyter.
+
+---
+
+### Any6D — 6D Pose Estimation
+
+```bash
+cd Any6D
+docker compose run --rm any6d python run_demo.py
+```
+
+---
+
+### Full Pipeline — YOLOE + Any6D
+
+```bash
+source master_env/bin/activate
+jupyter lab --ip=0.0.0.0 --port=8888 --no-browser
+```
+
+Open `notebooks/YOLOE_Any6D_Pipeline.ipynb` in Jupyter.
+
+---
+
+## Checkpoints
+
+Download manually if the setup script fails:
+
+| Model | Source | Destination |
+|---|---|---|
+| FoundationPose weights | [Google Drive](https://drive.google.com/drive/folders/1DFezOAD0oD1BblsXVxqDsl8fj0qzB82i) | `Any6D/foundationpose/weights/` |
+| SAM2 | [Meta AI](https://dl.fbaipublicfiles.com/segment_anything_2/092824/sam2.1_hiera_large.pt) | `Any6D/sam2/checkpoints/` |
+| InstantMesh | [HuggingFace](https://huggingface.co/TencentARC/InstantMesh/tree/main) | `Any6D/instantmesh/ckpts/` |
+
+---
+
+## GPU Architecture Reference
+
+| GPU | Compute Capability | TORCH_CUDA_ARCH_LIST |
+|---|---|---|
+| NVIDIA L4 | 8.9 | `8.9` |
+| NVIDIA T4 | 7.5 | `7.5` |
+| RTX 3090 / A100 | 8.6 | `8.6` |
+| Quadro M1000M | 5.0 | `5.0` |
+
+---
+
+## Troubleshooting
+
+**`libGL.so.1` not found:**
+```bash
+sudo apt-get install -y libgl1-mesa-glx libglib2.0-0
+```
+
+**`pkg_resources` not found during Docker build:**
+Already fixed in Dockerfile — `setuptools==69.5.1` is installed before `requirements.txt`.
+
+**`Permission denied (publickey)` for VS Code Remote SSH:**
+```powershell
+icacls "C:\Users\ADMIN\.ssh\config" /inheritance:r
+icacls "C:\Users\ADMIN\.ssh\config" /grant:r "JOSUE\ADMIN:F"
+```
+
+**Docker build fails with CUDA error:**
+Make sure `TORCH_CUDA_ARCH_LIST` matches your GPU in the Dockerfile.
+
+---
+
+## References
+
+- [Any6D](https://github.com/taeyeopl/Any6D)
+- [YOLOE](https://github.com/THU-MIG/yoloe)
+- [FoundationPose](https://github.com/NVlabs/FoundationPose)
+- [SAM2](https://github.com/facebookresearch/segment-anything-2)
+- [InstantMesh](https://huggingface.co/TencentARC/InstantMesh)
