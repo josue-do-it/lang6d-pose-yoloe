@@ -1,18 +1,116 @@
+# ── Environments ──────────────────────────────────────────────
 master_env/
 .venv/
-*.pt
-*.ckpt
-*.bin
-*.pth
+.env
+
+# ── Python ────────────────────────────────────────────────────
 __pycache__/
 *.pyc
-*.ts
+*.pyo
+*.egg*
+.ipynb_checkpoints/
+build/
+dist/
 
+# ── IDE ───────────────────────────────────────────────────────
+.vscode/
+.idea/
+.DS_Store
+
+# ── Models & weights ──────────────────────────────────────────
+*.pt
+*.pth
+*.ckpt
+*.bin
+*.ts
 *.safetensors
 
-# Outputs
+# ── Results & outputs ─────────────────────────────────────────
+Any6D/results/
 notebooks/outputs/
-.env
-notebooks/*.ts
 
-Any6D/
+# ── Dataset content (keep folder structure) ───────────────────
+Any6D/dataset/ho3d/*
+!Any6D/dataset/ho3d/.gitkeep
+
+# ── Any6D/foundationpose ──────────────────────────────────────
+Any6D/foundationpose/build/
+Any6D/foundationpose/weights/
+Any6D/foundationpose/debug/
+Any6D/foundationpose/data/
+Any6D/foundationpose/logs/
+Any6D/foundationpose/exp/
+Any6D/foundationpose/wandb/
+Any6D/foundationpose/demo_data/
+Any6D/foundationpose/downloads/
+Any6D/foundationpose/eggs/
+Any6D/foundationpose/.eggs/
+Any6D/foundationpose/lib/
+Any6D/foundationpose/lib64/
+Any6D/foundationpose/dist/
+Any6D/foundationpose/develop-eggs/
+Any6D/foundationpose/sdist/
+Any6D/foundationpose/wheels/
+Any6D/foundationpose/sacred/
+Any6D/foundationpose/artifacts/
+Any6D/foundationpose/htmlcov/
+Any6D/foundationpose/.tox/
+Any6D/foundationpose/.nox/
+Any6D/foundationpose/.cache/
+Any6D/foundationpose/.hypothesis/
+Any6D/foundationpose/.pytest_cache/
+Any6D/foundationpose/.mypy_cache/
+Any6D/foundationpose/.pyre/
+Any6D/foundationpose/.history/
+Any6D/foundationpose/.venv/
+Any6D/foundationpose/env/
+Any6D/foundationpose/venv/
+Any6D/foundationpose/cosypose/experiments/
+Any6D/foundationpose/BundleTrack/build/
+Any6D/foundationpose/*.so
+Any6D/foundationpose/*.zip
+Any6D/foundationpose/*.tar.*
+Any6D/foundationpose/*.blend1
+Any6D/foundationpose/*.svg
+Any6D/foundationpose/*.egg-info/
+Any6D/foundationpose/*.egg
+Any6D/foundationpose/*.py[cod]
+Any6D/foundationpose/*.mo
+Any6D/foundationpose/*.pot
+Any6D/foundationpose/*.log
+Any6D/foundationpose/*.pth
+Any6D/foundationpose/run_used.yml
+
+# ── Any6D/instantmesh ─────────────────────────────────────────
+Any6D/instantmesh/ckpts/
+Any6D/instantmesh/outputs/
+Any6D/instantmesh/lightning_logs/
+Any6D/instantmesh/logs/
+Any6D/instantmesh/build/
+Any6D/instantmesh/develop-eggs/
+Any6D/instantmesh/dist/
+Any6D/instantmesh/eggs/
+Any6D/instantmesh/.eggs/
+Any6D/instantmesh/lib/
+Any6D/instantmesh/lib64/
+Any6D/instantmesh/sdist/
+Any6D/instantmesh/wheels/
+Any6D/instantmesh/.trash/
+Any6D/instantmesh/.env/
+Any6D/instantmesh/figures*/
+Any6D/instantmesh/tools/objaverse_rendering/blender-3.2.2-linux-x64/
+Any6D/instantmesh/tools/objaverse_rendering/output/
+Any6D/instantmesh/*.so
+Any6D/instantmesh/*.egg-info/
+Any6D/instantmesh/*.egg
+Any6D/instantmesh/*.py[cod]
+
+# ── Any6D/sam2 ────────────────────────────────────────────────
+Any6D/sam2/checkpoints/
+Any6D/sam2/build/
+Any6D/sam2/_C.*
+Any6D/sam2/outputs/
+Any6D/sam2/.venv/
+Any6D/sam2/__pycache__/
+Any6D/sam2/*-checkpoint.ipynbAny6D/anchor_results/**/*.obj
+Any6D/anchor_results/**/*.zip

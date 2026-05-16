@@ -66,22 +66,69 @@ The pipeline will be validated by:
 
 - package : Install pytorch (CUDA 12.1) for GCP T4 /100 drivers, and scientific + utility packages
 
-# Installation of YOLOE 
+## Installation of YOLOE
 
-To start , clone the repo and run Setup
+To get started, clone the repository.
+---
+
+### Clone the project
+
+```bash
+git clone https://github.com/josue-do-it/open-vocabulary-6d-pose-yoloe.git
+cd open-vocabulary-6d-pose-yoloe
+```
+
+---
+
+Then create the environment and install all required packages by running:
 
 ```bash
 chmod +x setup_master_env.sh
 bash setup_master_env.sh
+
+
+# Activate environment
+source master_env/bin/activate
 ```
 
+This script creates a Python virtual environment called `master_env` and installs the core dependencies:
+
+![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)
+![Jupyter](https://img.shields.io/badge/Jupyter-F37626?logo=jupyter&logoColor=white)
+![OpenCV](https://img.shields.io/badge/OpenCV-5C3EE8?logo=opencv&logoColor=white)
+![Matplotlib](https://img.shields.io/badge/Matplotlib-11557C?logo=matplotlib&logoColor=white)
+![Pillow](https://img.shields.io/badge/Pillow-3776AB?logo=python&logoColor=white)
+![Ultralytics](https://img.shields.io/badge/Ultralytics-111F68?logo=yolo&logoColor=white)
+
+
+## Setup & Installation Any6D
+
+### 1. Clone & Download Weights
+![Bash](https://img.shields.io/badge/Bash-4EAA25?logo=gnubash&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
+![HuggingFace](https://img.shields.io/badge/HuggingFace-FFD21E?logo=huggingface&logoColor=black)
+
+Clones the Any6D repository, creates checkpoint directories, and downloads the required model weights (SAM2, InstantMesh, FoundationPose).
+
+```bash
+chmod +x setup_any6d.sh
+bash setup_any6d.sh
+```
+
+### 2. Build Docker Image
+![Bash](https://img.shields.io/badge/Bash-4EAA25?logo=gnubash&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
+![NVIDIA](https://img.shields.io/badge/NVIDIA_CUDA-76B900?logo=nvidia&logoColor=white)
+
+Creates the `docker-compose.yml` if it doesn't exist, configures CUDA architecture for NVIDIA L4 (8.9), and builds the Any6D Docker image.
+
+```bash
+chmod +x build_any6d.sh
+bash build_any6d.sh
+```
 
 ---
-# Open Vocabulary 6D Pose Estimation with YOLOE
 
-This project combines **YOLOE** (open vocabulary object detection) with **Any6D** (6D pose estimation) to enable zero-shot object detection and precise pose estimation.
-
----
 
 ## Project Structure
 
@@ -149,41 +196,14 @@ sudo systemctl restart docker
 docker run --rm --gpus all nvidia/cuda:12.1.1-base-ubuntu22.04 nvidia-smi
 ```
 
----
 
-### Step 2 — Clone the project
 
-```bash
-git clone https://github.com/josue-do-it/open-vocabulary-6d-pose-yoloe.git
-cd open-vocabulary-6d-pose-yoloe
-```
-
----
-
-### Step 3 — Setup YOLOE environment
+### Step 3 — Setup  environment
 
 ```bash
 # Install python3-venv if needed
 sudo apt install python3.10-venv -y
 
-# Run setup script
-bash setup_master_env.sh
-
-# Activate environment
-source master_env/bin/activate
-```
-
----
-
-### Step 4 — Setup Any6D + Docker
-
-```bash
-# This script will:
-# - Clone Any6D
-# - Create checkpoint directories
-# - Download SAM2, InstantMesh, FoundationPose weights
-# - Build the Docker image
-bash setup_any6d.sh
 ```
 
 ---

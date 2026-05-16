@@ -1,0 +1,38 @@
+
+services:
+  any6d:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: any6d:cuda12.1
+    container_name: any6d
+
+    # ── GPU access ───────────────────────────────────────────
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+    # ── Volume: éditer le code en live sans rebuilder ────────
+    volumes:
+      - .:/workspace
+      - /home/josue_aims_ac_za/ssd_4tb/dataset:/workspace/dataset
+
+    stdin_open: true
+    tty: true
+
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility,graphics
+      - CONDA_DEFAULT_ENV=Any6D
+      - TORCH_CUDA_ARCH_LIST=8.9
+
+    shm_size: "16gb"
+
+    working_dir: /workspace
+
+    entrypoint: ["/bin/bash", "--login", "-c"]
+    command: ["conda activate Any6D && exec bash"]
