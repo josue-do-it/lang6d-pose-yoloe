@@ -1,5 +1,9 @@
 # Open Vocabulary 6D Object Pose Estimation using YOLOE
 
+<p align="center">
+  <img src="assets/final.png" alt="PoseLingua-6D Pipeline" width="100%"/>
+</p>
+
 Research project exploring open-vocabulary object detection and 6D pose estimation by combining YOLOE with model-free pose estimation methods for robotic manipulation of unseen objects.
 ## Tools
 - Python
