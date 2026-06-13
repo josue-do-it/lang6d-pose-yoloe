@@ -16,7 +16,6 @@ Run inside Docker:
 """
 
 # ── Imports ───────────────────────────────────────────────────────────────────
-import copy
 import sys
 import os
 import re
@@ -212,25 +211,31 @@ def _compute_iou(mask_a, mask_b):
 
 # ── Pose estimation ───────────────────────────────────────────────────────────
 
-def estimate_corrected_pose(est, reader, im_id, pred_pose_anchor, gt_pose_anchor, mask):
+def estimate_corrected_pose(est, K, rgb, depth, mask,
+                            pred_pose_anchor, gt_pose_anchor, name="query"):
     """
-    Estimate pose for query frame and apply relative anchor correction.
+    Estimate pose for a query frame and apply relative anchor correction.
     Correction: pred_q = (pred_anchor → pred_query) @ gt_anchor
-    This reduces systematic registration drift.
+    This reduces systematic registration drift across frames.
+
+    Args:
+        est: Any6D estimator (already reset to current object mesh)
+        K: 3x3 camera intrinsics
+        rgb: H×W×3 uint8 RGB image
+        depth: H×W float32 depth in metres
+        mask: H×W bool detection mask
+        pred_pose_anchor: 4×4 predicted pose on anchor frame
+        gt_pose_anchor: 4×4 ground-truth pose on anchor frame
+        name: debug label passed to est.register()
+
+    Returns:
+        corrected_pose: 4×4 corrected predicted pose
     """
-    rgb   = reader.get_rgb(im_id)
-    depth = reader.get_depth(im_id)
-    H, W  = rgb.shape[:2]
-
-    gt_pose_q = reader.get_gt_pose(im_id)
-    pred_pose_q = est.register(
-        K=reader.K, rgb=rgb, depth=depth,
-        ob_mask=mask, iteration=ANY6D_ITERS)
-
+    pred_pose_q        = est.register(K=K, rgb=rgb, depth=depth,
+                                      ob_mask=mask, iteration=ANY6D_ITERS, name=name)
     relative_transform = pred_pose_q @ np.linalg.inv(pred_pose_anchor)
     corrected_pose     = relative_transform @ gt_pose_anchor
-
-    return corrected_pose, gt_pose_q, rgb
+    return corrected_pose
 
 
 # ── Metrics ───────────────────────────────────────────────────────────────────
@@ -413,8 +418,10 @@ def run_object(obj_id: int, est, models_info: dict, args, save_dir: str) -> dict
 
         mask, yoloe_det, conf, iou = get_detection_mask(rgb, keyword, gt_mask, H, W)
 
-        corrected_pose, _, _ = estimate_corrected_pose(
-            est, reader, im_id, pred_pose_anchor, gt_pose_anchor, mask)
+        corrected_pose = estimate_corrected_pose(
+            est, reader.K, rgb, depth, mask,
+            pred_pose_anchor, gt_pose_anchor,
+            name=f"{obj_name}_{im_id}")
 
         frame_m = compute_frame_metrics(
             corrected_pose, gt_pose, gt_mesh.vertices, diameter_m, reader.K)
