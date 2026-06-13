@@ -112,5 +112,32 @@ Any6D/sam2/_C.*
 Any6D/sam2/outputs/
 Any6D/sam2/.venv/
 Any6D/sam2/__pycache__/
-Any6D/sam2/*-checkpoint.ipynbAny6D/anchor_results/**/*.obj
+Any6D/sam2/*-checkpoint.ipynb
+
+# ── Anchor result intermediates ───────────────────────────────
+Any6D/anchor_results/**/*.obj
 Any6D/anchor_results/**/*.zip
+
+# ── Dataset zips & large binaries ─────────────────────────────
+Any6D/ycbv_base.zip
+Any6D/ycbv_models.zip
+Any6D/ycbv_test_bop19.zip
+Any6D/wget-log*
+masks_XMem.zip
+thesis_figures.zip
+
+# ── YOLOE weights ─────────────────────────────────────────────
+Any6D/yoloe/
+
+# ── Temp dirs & test artifacts ────────────────────────────────
+Any6D/tmp_*/
+Any6D/pipeline_test/
+Any6D/test_input/
+
+# ── Per-frame JSON results (trop volumineux) ──────────────────
+Any6D/results/lm_pipeline/
+Any6D/results/ycbv_pipeline/
+
+# ── Misc ──────────────────────────────────────────────────────
+output.png
+"hortlog -sne --all"
