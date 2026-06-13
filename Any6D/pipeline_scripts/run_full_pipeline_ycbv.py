@@ -13,7 +13,12 @@ Structure:
   Save per-object JSON + global XLSX summary
 
 Run inside Docker:
-    /opt/conda/envs/Any6D/bin/python3 /workspace/run_full_pipeline_ycbv.py [--stride 1] [--skip_llm]
+    # Full evaluation
+    /opt/conda/envs/Any6D/bin/python3 /workspace/pipeline_scripts/run_full_pipeline_ycbv.py
+
+    # Test rapide sur un seul objet, une seule scène, 3 frames max
+    /opt/conda/envs/Any6D/bin/python3 /workspace/pipeline_scripts/run_full_pipeline_ycbv.py \
+        --obj_ids 5 --scene_id 52 --max_frames 3
 """
 import os, sys, re, json, glob, argparse, collections, copy
 from datetime import datetime
@@ -230,8 +235,12 @@ def main():
                         help="Frame stride within BOP19 targets (default=1)")
     parser.add_argument("--skip_llm",  action="store_true")
     parser.add_argument("--llm_model", default="mistral:latest")
-    parser.add_argument("--obj_ids",   type=int, nargs='+', default=None,
+    parser.add_argument("--obj_ids",    type=int, nargs='+', default=None,
                         help="Subset of obj_ids to run (default: all 1-21)")
+    parser.add_argument("--scene_id",   type=int, default=None,
+                        help="Limit to one specific scene (e.g. 52)")
+    parser.add_argument("--max_frames", type=int, default=None,
+                        help="Max frames per scene, e.g. 1 for quick single-image test")
     args = parser.parse_args()
     global LLM_MODEL
     LLM_MODEL = args.llm_model
@@ -302,9 +311,15 @@ def main():
         all_frames = []
         obj_add = []; obj_adds = []; obj_ar = []; obj_re = []; obj_te = []
 
-        for scene_id in sorted(obj_scene_frames[obj_id].keys()):
+        scenes = sorted(obj_scene_frames[obj_id].keys())
+        if args.scene_id is not None:
+            scenes = [s for s in scenes if s == args.scene_id]
+
+        for scene_id in scenes:
             im_ids_all = obj_scene_frames[obj_id][scene_id]
             im_ids     = im_ids_all[::args.stride]
+            if args.max_frames is not None:
+                im_ids = im_ids[:args.max_frames]
             reader     = YCBVReader(scene_id, obj_id)
 
             # anchor: first BOP19 target frame in this scene

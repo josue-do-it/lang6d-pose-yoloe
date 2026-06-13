@@ -246,8 +246,10 @@ if __name__ == '__main__':
                         help="Stride over BOP19 test images (1=full, 5=quick)")
     parser.add_argument("--save_dir", default=None)
     parser.add_argument("--llm_model", default="mistral:latest")
-    parser.add_argument("--skip_llm", action="store_true",
+    parser.add_argument("--skip_llm",   action="store_true",
                         help="Use object name as YOLOE prompt directly")
+    parser.add_argument("--max_frames", type=int, default=None,
+                        help="Max frames per object, e.g. 1 for quick single-image test")
     args = parser.parse_args()
 
     LM_NAMES_LOCAL = LM_NAMES   # shadow for access below
@@ -317,6 +319,8 @@ if __name__ == '__main__':
         frames_out = []
 
         test_ids = reader.test_im_ids[::args.stride]
+        if args.max_frames is not None:
+            test_ids = test_ids[:args.max_frames]
         print(f"  Evaluating {len(test_ids)} images (stride={args.stride})")
 
         # ── Anchor: first test image → anchor pose ─────────────────────────
