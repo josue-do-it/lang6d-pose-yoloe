@@ -285,6 +285,154 @@ Make sure `TORCH_CUDA_ARCH_LIST` matches your GPU in the Dockerfile.
 
 ---
 
+---
+
+## Testing the Pipeline — Step by Step
+
+After cloning and completing the setup above, follow these steps to run the full pipeline.
+
+### Prerequisites
+
+Make sure the following are running before any test:
+
+```bash
+# 1. Start the Any6D Docker container (detached)
+cd Any6D
+docker compose up -d
+
+# 2. Start Ollama with Mistral (LLM keyword extractor)
+ollama serve &
+ollama pull mistral:latest
+
+# 3. Activate the Python environment
+source ../master_env/bin/activate
+```
+
+---
+
+### Test 1 — Real-world inference (single image + LiDAR)
+
+Uses the included `bottle.jpg` and `bottle.ply` (iPhone 13 Pro LiDAR capture).
+
+```bash
+docker exec any6d_active python /workspace/infer_pose_single.py \
+    --image  /workspace/test_input/bottle.jpg \
+    --ply    /workspace/test_input/bottle.ply \
+    --instruction "Please hand me the bottle" \
+    --out_dir /workspace/results/infer_pose_bottle
+```
+
+**Expected output:**
+```
+[LLM] keyword: "bottle"
+[YOLOE] conf=0.914  n_pts=2607
+Pose saved → /workspace/results/infer_pose_bottle/bottle_pose.json
+  T = [-0.425  0.525  1.684] m   |T| = 1.815 m
+```
+
+Then generate the publication figure:
+
+```bash
+docker exec any6d_active python /workspace/replot_infer_pose.py \
+    --json /workspace/results/infer_pose_bottle/bottle_pose.json \
+    --img  /workspace/test_input/bottle.jpg \
+    --ply  /workspace/test_input/bottle.ply \
+    --out_dir /workspace/results/infer_pose_bottle/report_plots
+```
+
+---
+
+### Test 2 — Full pipeline on HO3D (one sequence)
+
+Runs LLM → YOLOE → Any6D → BOP metrics on a single HO3D sequence.
+
+```bash
+# Inside Docker
+docker exec any6d_active python /workspace/run_full_pipeline_ho3d.py \
+    --seq AP13 \
+    --dataset_root /dataset/ho3d \
+    --out_dir /workspace/results/ho3d_pipeline/test_run \
+    --llm_model mistral:latest
+```
+
+**Expected metrics (AP13):**
+```
+ADD-S : 100.0%   ADD : 57.5%   AR : 48.6%
+Det   :  100%    IoU : 93.8%   T_error : 2.1 cm
+```
+
+To run all 13 sequences at once:
+
+```bash
+chmod +x Any6D/run_full_pipeline_ho3d_loop.sh
+bash Any6D/run_full_pipeline_ho3d_loop.sh
+```
+
+---
+
+### Test 3 — YOLOE + Any6D baseline (no LLM)
+
+Runs Any6D with YOLOE masks directly, without the LLM keyword extractor.
+
+```bash
+docker exec any6d_active python /workspace/run_yoloe_ho3d_query.py \
+    --seq SM1 \
+    --dataset_root /dataset/ho3d \
+    --out_dir /workspace/results/ho3d_results/any6d_yoloe/test_run \
+    --prompt "mustard bottle"
+```
+
+---
+
+### Test 4 — Generate comparison figures
+
+After running both pipelines, regenerate the comparison table and delta plots:
+
+```bash
+# Outside Docker (master_env)
+cd Any6D
+python plot_comparison_table.py
+# Output: results/pipeline_plots/comparison_table.png
+#         results/pipeline_plots/comparison_delta.png
+```
+
+---
+
+### Test 5 — 3D bounding box projection
+
+Project the estimated 3D bounding box onto the image:
+
+```bash
+docker exec any6d_active python /workspace/plot_bbox3d.py \
+    --json /workspace/results/infer_pose_bottle/bottle_pose.json \
+    --img  /workspace/test_input/bottle.jpg \
+    --out  /workspace/results/infer_pose_bottle/bottle_bbox3d.png
+```
+
+---
+
+### Expected Results Summary
+
+Evaluation on **HO3D dataset — 13 sequences, ~2 012 frames total**.
+GPU: NVIDIA L4 (23 GB VRAM). All models off-the-shelf, no fine-tuning.
+
+#### Comparison with state-of-the-art (Any6D paper — Table 1)
+
+| Method | Modality | ADD-S | ADD | AR |
+|---|---|---|---|---|
+| Oryon [11] | RGB-D + Language | 23.0 | 0.0 | 1.0 |
+| LoFTR [59] | RGB-D | 29.5 | 2.3 | 3.2 |
+| Gedi [53] | Depth | 71.9 | 9.7 | 7.4 |
+| Any6D *(paper, oracle masks)* | RGB-D | **98.7** | **40.4** | **38.3** |
+| YOLOE + Any6D *(ours, no LLM)* | RGB-D | 74.4 | 24.1 | 30.6 |
+| **LLM + YOLOE + Any6D *(ours)*** | RGB-D + Language | **89.6** | **28.7** | **37.6** |
+
+> Oryon is the only other language-guided baseline (RGB-D + Language).
+> Our pipeline outperforms Oryon by **+66.6 pp ADD-S** and **+36.6 pp AR**,
+> while remaining competitive with Any6D oracle (−9.1 pp ADD-S) without any CAD model or fine-tuning.
+
+---
+
 ## References
 
 - [Any6D](https://github.com/taeyeopl/Any6D)
