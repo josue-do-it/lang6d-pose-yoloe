@@ -2,7 +2,7 @@
 # Run inside Docker: docker exec any6d_active bash /workspace/run_replot.sh
 # Generates publication-quality report figures from real-world iPhone LiDAR test.
 
-python /workspace/replot_infer_pose.py \
+python /workspace/visualization/replot_infer_pose.py \
     --json    /workspace/results/infer_pose/0000001_pose.json \
     --image   /workspace/test_input/0000001.jpg \
     --ply     /workspace/test_input/0000001.ply \

@@ -3,7 +3,7 @@ Projette le 3D bounding box du mesh GT aux poses corrigées (pred_q et gt_pose_q
 Bleu = estimé, Vert = GT. Montre 4 frames par séquence (bonne + mauvaise).
 
 Run inside Docker:
-    /opt/conda/envs/Any6D/bin/python3 /workspace/plot_bbox3d_corrected.py
+    /opt/conda/envs/Any6D/bin/python3 /workspace/visualization/plot_bbox3d_corrected.py
 """
 import os, sys, json, glob, pickle
 import numpy as np

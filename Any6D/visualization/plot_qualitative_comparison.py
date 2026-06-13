@@ -8,7 +8,7 @@ Columns : Anchor Image | LLM+YOLOE+Any6D Estimated | Ground Truth
 Rows    : AP13 (pitcher) | SM1 (mustard) | SB11 (bleach cleanser)
 
 Run inside Docker:
-    /opt/conda/envs/Any6D/bin/python3 /workspace/plot_qualitative_comparison.py
+    /opt/conda/envs/Any6D/bin/python3 /workspace/visualization/plot_qualitative_comparison.py
 """
 import cv2
 import numpy as np

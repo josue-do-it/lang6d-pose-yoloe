@@ -3,7 +3,7 @@ Visualisation qualitative YCB-Video : pose estimée (bleu) + GT (vert) sur image
 Grille 7×3 objets × 3 panels = 21 objets.
 
 Run inside Docker:
-    /opt/conda/envs/Any6D/bin/python3 /workspace/plot_qualitative_ycbv.py
+    /opt/conda/envs/Any6D/bin/python3 /workspace/visualization/plot_qualitative_ycbv.py
 """
 import os, sys, json, glob
 import numpy as np

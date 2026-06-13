@@ -5,7 +5,7 @@ Uses pred_q from AP13_poses.json (R_pred, T_pred after pose_aq @ gt_pose_a).
 Renders the GT YCB CAD mesh at corrected pred_q and gt_pose_q using nvdiffrast.
 
 Run inside Docker:
-    /opt/conda/envs/Any6D/bin/python3 /workspace/plot_qualitative_corrected.py
+    /opt/conda/envs/Any6D/bin/python3 /workspace/visualization/plot_qualitative_corrected.py
 """
 import os, sys, json, glob
 import numpy as np

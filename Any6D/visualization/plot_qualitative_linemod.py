@@ -5,7 +5,7 @@ Visualisation qualitative LINEMOD : pose estimée (bleu) + GT (vert) sur image r
 - Crop centré sur l'objet (mask GT bounding box)
 
 Run inside Docker:
-    /opt/conda/envs/Any6D/bin/python3 /workspace/plot_qualitative_linemod.py
+    /opt/conda/envs/Any6D/bin/python3 /workspace/visualization/plot_qualitative_linemod.py
 """
 import os, sys, json, glob
 import numpy as np

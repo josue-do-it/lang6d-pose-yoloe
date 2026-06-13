@@ -3,7 +3,7 @@ Export tous les résultats disponibles (HO3D + LINEMOD) en XLSX et JSON consolid
 Lit les fichiers *_poses.json existants — n'a pas besoin de relancer l'évaluation.
 
 Run inside Docker:
-    /opt/conda/envs/Any6D/bin/python3 /workspace/export_results_xlsx_json.py
+    /opt/conda/envs/Any6D/bin/python3 /workspace/visualization/export_results_xlsx_json.py
 """
 import os, sys, json, glob
 import numpy as np
