@@ -1,0 +1,548 @@
+{
+  "llm_model": "llama3.2:3b",
+  "iou_threshold": 0.3,
+  "summary": [
+    {
+      "Object": "019_pitcher_base",
+      "Det_Rate(%)": 100.0,
+      "Conf_Score(%)": 11.2,
+      "Mean_IoU(%)": 75.2,
+      "Prompt_Acc(%)": 80.0,
+      "Best_Keyword": "blue pitcher",
+      "LLM_Model": "llama3.2:3b"
+    },
+    {
+      "Object": "021_bleach_cleanser",
+      "Det_Rate(%)": 20.0,
+      "Conf_Score(%)": 3.9,
+      "Mean_IoU(%)": 18.1,
+      "Prompt_Acc(%)": 20.0,
+      "Best_Keyword": "white cleanser",
+      "LLM_Model": "llama3.2:3b"
+    },
+    {
+      "Object": "005_tomato_soup_can",
+      "Det_Rate(%)": 100.0,
+      "Conf_Score(%)": 8.8,
+      "Mean_IoU(%)": 0.0,
+      "Prompt_Acc(%)": 0.0,
+      "Best_Keyword": "soup can",
+      "LLM_Model": "llama3.2:3b"
+    },
+    {
+      "Object": "004_sugar_box",
+      "Det_Rate(%)": 100.0,
+      "Conf_Score(%)": 58.3,
+      "Mean_IoU(%)": 18.5,
+      "Prompt_Acc(%)": 20.0,
+      "Best_Keyword": "domino box",
+      "LLM_Model": "llama3.2:3b"
+    },
+    {
+      "Object": "red_drill",
+      "Det_Rate(%)": 100.0,
+      "Conf_Score(%)": 84.9,
+      "Mean_IoU(%)": 83.3,
+      "Prompt_Acc(%)": 100.0,
+      "Best_Keyword": "red drill",
+      "LLM_Model": "llama3.2:3b"
+    },
+    {
+      "Object": "003_cracker_box",
+      "Det_Rate(%)": 100.0,
+      "Conf_Score(%)": 30.4,
+      "Mean_IoU(%)": 83.2,
+      "Prompt_Acc(%)": 100.0,
+      "Best_Keyword": "cracker box",
+      "LLM_Model": "llama3.2:3b"
+    },
+    {
+      "Object": "banana",
+      "Det_Rate(%)": 100.0,
+      "Conf_Score(%)": 74.8,
+      "Mean_IoU(%)": 91.5,
+      "Prompt_Acc(%)": 100.0,
+      "Best_Keyword": "banana",
+      "LLM_Model": "llama3.2:3b"
+    },
+    {
+      "Object": "006_mustard_bottle",
+      "Det_Rate(%)": 100.0,
+      "Conf_Score(%)": 18.9,
+      "Mean_IoU(%)": 93.7,
+      "Prompt_Acc(%)": 100.0,
+      "Best_Keyword": "yellow squeez",
+      "LLM_Model": "llama3.2:3b"
+    },
+    {
+      "Object": "010_potted_meat_can",
+      "Det_Rate(%)": 100.0,
+      "Conf_Score(%)": 50.6,
+      "Mean_IoU(%)": 18.3,
+      "Prompt_Acc(%)": 20.0,
+      "Best_Keyword": "metal box",
+      "LLM_Model": "llama3.2:3b"
+    },
+    {
+      "Object": "MEAN",
+      "Det_Rate(%)": 91.1,
+      "Conf_Score(%)": 38.0,
+      "Mean_IoU(%)": 53.5,
+      "Prompt_Acc(%)": 60.0,
+      "Best_Keyword": "\u2014",
+      "LLM_Model": "llama3.2:3b"
+    }
+  ],
+  "per_instruction": [
+    {
+      "object": "019_pitcher_base",
+      "instr_idx": 0,
+      "instruction": "I'm thirsty, can you pass me that big blue thing for pouring drinks?",
+      "keyword": "big blue pitcher",
+      "detected": true,
+      "conf": 0.215,
+      "iou": 0.0,
+      "accurate": 0.0
+    },
+    {
+      "object": "019_pitcher_base",
+      "instr_idx": 1,
+      "instruction": "Grab the tall blue plastic container with the handle on the left.",
+      "keyword": "blue pitcher",
+      "detected": true,
+      "conf": 0.084,
+      "iou": 0.94,
+      "accurate": 1.0
+    },
+    {
+      "object": "019_pitcher_base",
+      "instr_idx": 2,
+      "instruction": "That blue jug sitting next to the Domino sugar box, can you bring it here?",
+      "keyword": "blue jug",
+      "detected": true,
+      "conf": 0.093,
+      "iou": 0.94,
+      "accurate": 1.0
+    },
+    {
+      "object": "019_pitcher_base",
+      "instr_idx": 3,
+      "instruction": "I need to pour some water, hand me that wide blue container on the desk.",
+      "keyword": "blue pitcher",
+      "detected": true,
+      "conf": 0.084,
+      "iou": 0.94,
+      "accurate": 1.0
+    },
+    {
+      "object": "019_pitcher_base",
+      "instr_idx": 4,
+      "instruction": "The blue pitcher near the keyboard, can you get that for me?",
+      "keyword": "blue pitcher",
+      "detected": true,
+      "conf": 0.084,
+      "iou": 0.94,
+      "accurate": 1.0
+    },
+    {
+      "object": "021_bleach_cleanser",
+      "instr_idx": 0,
+      "instruction": "Pass me the tall white cleaning bottle on the right.",
+      "keyword": "white cleanser",
+      "detected": true,
+      "conf": 0.194,
+      "iou": 0.906,
+      "accurate": 1.0
+    },
+    {
+      "object": "021_bleach_cleanser",
+      "instr_idx": 1,
+      "instruction": "Grab that white bleach product next to the keyboard.",
+      "keyword": "bleach bottle",
+      "detected": false,
+      "conf": 0.0,
+      "iou": 0.0,
+      "accurate": 0.0
+    },
+    {
+      "object": "021_bleach_cleanser",
+      "instr_idx": 2,
+      "instruction": "The white squeeze bottle used for scrubbing surfaces, hand it to me.",
+      "keyword": "cleaner",
+      "detected": false,
+      "conf": 0.0,
+      "iou": 0.0,
+      "accurate": 0.0
+    },
+    {
+      "object": "021_bleach_cleanser",
+      "instr_idx": 3,
+      "instruction": "I need to clean something, can you get that white bottle on the far right?",
+      "keyword": "cleanser",
+      "detected": false,
+      "conf": 0.0,
+      "iou": 0.0,
+      "accurate": 0.0
+    },
+    {
+      "object": "021_bleach_cleanser",
+      "instr_idx": 4,
+      "instruction": "That household cleaner in the white plastic container, bring it here.",
+      "keyword": "cleanser",
+      "detected": false,
+      "conf": 0.0,
+      "iou": 0.0,
+      "accurate": 0.0
+    },
+    {
+      "object": "005_tomato_soup_can",
+      "instr_idx": 0,
+      "instruction": "Grab that red and white tin can on the left side of the desk.",
+      "keyword": "soup can",
+      "detected": true,
+      "conf": 0.088,
+      "iou": 0.0,
+      "accurate": 0.0
+    },
+    {
+      "object": "005_tomato_soup_can",
+      "instr_idx": 1,
+      "instruction": "I want something warm for lunch, pass me that soup can.",
+      "keyword": "soup can",
+      "detected": true,
+      "conf": 0.088,
+      "iou": 0.0,
+      "accurate": 0.0
+    },
+    {
+      "object": "005_tomato_soup_can",
+      "instr_idx": 2,
+      "instruction": "The round metal can with the red label, can you hand it to me?",
+      "keyword": "soup can",
+      "detected": true,
+      "conf": 0.088,
+      "iou": 0.0,
+      "accurate": 0.0
+    },
+    {
+      "object": "005_tomato_soup_can",
+      "instr_idx": 3,
+      "instruction": "That Campbell's can next to the black tool, bring it over.",
+      "keyword": "soup can",
+      "detected": true,
+      "conf": 0.088,
+      "iou": 0.0,
+      "accurate": 0.0
+    },
+    {
+      "object": "005_tomato_soup_can",
+      "instr_idx": 4,
+      "instruction": "The short cylindrical tin with the tomato label, grab that for me.",
+      "keyword": "soup can",
+      "detected": true,
+      "conf": 0.088,
+      "iou": 0.0,
+      "accurate": 0.0
+    },
+    {
+      "object": "004_sugar_box",
+      "instr_idx": 0,
+      "instruction": "Grab the yellow Domino box sitting between the SPAM can and the blue tin.",
+      "keyword": "yellow domino box",
+      "detected": true,
+      "conf": 0.597,
+      "iou": 0.0,
+      "accurate": 0.0
+    },
+    {
+      "object": "004_sugar_box",
+      "instr_idx": 1,
+      "instruction": "Pass me that orange and yellow cardboard box with the sweet ingredient inside.",
+      "keyword": "sugar box",
+      "detected": true,
+      "conf": 0.684,
+      "iou": 0.0,
+      "accurate": 0.0
+    },
+    {
+      "object": "004_sugar_box",
+      "instr_idx": 2,
+      "instruction": "The Domino branded box on the black board, can you hand it to me?",
+      "keyword": "domino box",
+      "detected": true,
+      "conf": 0.546,
+      "iou": 0.927,
+      "accurate": 1.0
+    },
+    {
+      "object": "004_sugar_box",
+      "instr_idx": 3,
+      "instruction": "I need to sweeten my coffee, get me that yellow box on the table.",
+      "keyword": "sugar box",
+      "detected": true,
+      "conf": 0.684,
+      "iou": 0.0,
+      "accurate": 0.0
+    },
+    {
+      "object": "004_sugar_box",
+      "instr_idx": 4,
+      "instruction": "That tall rectangular carton with the white granules inside, bring it here.",
+      "keyword": "white sugar box",
+      "detected": true,
+      "conf": 0.402,
+      "iou": 0.0,
+      "accurate": 0.0
+    },
+    {
+      "object": "red_drill",
+      "instr_idx": 0,
+      "instruction": "Hand me that red power tool lying on the checkered table.",
+      "keyword": "red drill",
+      "detected": true,
+      "conf": 0.899,
+      "iou": 0.833,
+      "accurate": 1.0
+    },
+    {
+      "object": "red_drill",
+      "instr_idx": 1,
+      "instruction": "Grab the Black & Decker drill on the left side of the table.",
+      "keyword": "drill",
+      "detected": true,
+      "conf": 0.909,
+      "iou": 0.833,
+      "accurate": 1.0
+    },
+    {
+      "object": "red_drill",
+      "instr_idx": 2,
+      "instruction": "That red cordless tool next to the banana, pass it to me.",
+      "keyword": "cordless drill",
+      "detected": true,
+      "conf": 0.639,
+      "iou": 0.833,
+      "accurate": 1.0
+    },
+    {
+      "object": "red_drill",
+      "instr_idx": 3,
+      "instruction": "I need to drill something, get me that red electric tool.",
+      "keyword": "red drill",
+      "detected": true,
+      "conf": 0.899,
+      "iou": 0.833,
+      "accurate": 1.0
+    },
+    {
+      "object": "red_drill",
+      "instr_idx": 4,
+      "instruction": "The battery-powered red device lying flat on the board, bring it here.",
+      "keyword": "red drill",
+      "detected": true,
+      "conf": 0.899,
+      "iou": 0.833,
+      "accurate": 1.0
+    },
+    {
+      "object": "003_cracker_box",
+      "instr_idx": 0,
+      "instruction": "Grab that red snack box standing upright on the table.",
+      "keyword": "cracker box",
+      "detected": true,
+      "conf": 0.312,
+      "iou": 0.832,
+      "accurate": 1.0
+    },
+    {
+      "object": "003_cracker_box",
+      "instr_idx": 1,
+      "instruction": "Pass me the Cheez-It cracker box behind the banana.",
+      "keyword": "cracker box",
+      "detected": true,
+      "conf": 0.312,
+      "iou": 0.832,
+      "accurate": 1.0
+    },
+    {
+      "object": "003_cracker_box",
+      "instr_idx": 2,
+      "instruction": "That rectangular cardboard box with the snacks inside, hand it over.",
+      "keyword": "cracker box",
+      "detected": true,
+      "conf": 0.312,
+      "iou": 0.832,
+      "accurate": 1.0
+    },
+    {
+      "object": "003_cracker_box",
+      "instr_idx": 3,
+      "instruction": "I want something to munch on, get me that red box on the table.",
+      "keyword": "cracker box",
+      "detected": true,
+      "conf": 0.312,
+      "iou": 0.832,
+      "accurate": 1.0
+    },
+    {
+      "object": "003_cracker_box",
+      "instr_idx": 4,
+      "instruction": "The tall red box that looks like a cereal box but smaller, bring it here.",
+      "keyword": "cereal box",
+      "detected": true,
+      "conf": 0.271,
+      "iou": 0.832,
+      "accurate": 1.0
+    },
+    {
+      "object": "banana",
+      "instr_idx": 0,
+      "instruction": "Grab that yellow curved banana lying on the table.",
+      "keyword": "banana",
+      "detected": true,
+      "conf": 0.76,
+      "iou": 0.915,
+      "accurate": 1.0
+    },
+    {
+      "object": "banana",
+      "instr_idx": 1,
+      "instruction": "Pass me the banana between the drill and the mustard bottle.",
+      "keyword": "banana",
+      "detected": true,
+      "conf": 0.76,
+      "iou": 0.915,
+      "accurate": 1.0
+    },
+    {
+      "object": "banana",
+      "instr_idx": 2,
+      "instruction": "That long yellow banana on the checkered board, hand it to me.",
+      "keyword": "yellow banana",
+      "detected": true,
+      "conf": 0.699,
+      "iou": 0.915,
+      "accurate": 1.0
+    },
+    {
+      "object": "banana",
+      "instr_idx": 3,
+      "instruction": "I need a snack, can you get me that banana in the middle of the table?",
+      "keyword": "banana",
+      "detected": true,
+      "conf": 0.76,
+      "iou": 0.915,
+      "accurate": 1.0
+    },
+    {
+      "object": "banana",
+      "instr_idx": 4,
+      "instruction": "The banana lying flat between the red tool and the snack box, bring it here.",
+      "keyword": "banana",
+      "detected": true,
+      "conf": 0.76,
+      "iou": 0.915,
+      "accurate": 1.0
+    },
+    {
+      "object": "006_mustard_bottle",
+      "instr_idx": 0,
+      "instruction": "Grab that yellow squeeze bottle standing next to the blue pitcher.",
+      "keyword": "yellow squeez",
+      "detected": true,
+      "conf": 0.252,
+      "iou": 0.937,
+      "accurate": 1.0
+    },
+    {
+      "object": "006_mustard_bottle",
+      "instr_idx": 1,
+      "instruction": "Pass me the yellow condiment bottle on the tray.",
+      "keyword": "mustard bottle",
+      "detected": true,
+      "conf": 0.455,
+      "iou": 0.937,
+      "accurate": 1.0
+    },
+    {
+      "object": "006_mustard_bottle",
+      "instr_idx": 2,
+      "instruction": "That tall plastic container with the yellow colour, hand it to me.",
+      "keyword": "yellow container",
+      "detected": true,
+      "conf": 0.139,
+      "iou": 0.937,
+      "accurate": 1.0
+    },
+    {
+      "object": "006_mustard_bottle",
+      "instr_idx": 3,
+      "instruction": "I need something to put on my hot dog, get me that yellow bottle.",
+      "keyword": "mustard",
+      "detected": true,
+      "conf": 0.05,
+      "iou": 0.937,
+      "accurate": 1.0
+    },
+    {
+      "object": "006_mustard_bottle",
+      "instr_idx": 4,
+      "instruction": "The mustard bottle sitting on the wooden tray, can you bring it here?",
+      "keyword": "mustard",
+      "detected": true,
+      "conf": 0.05,
+      "iou": 0.937,
+      "accurate": 1.0
+    },
+    {
+      "object": "010_potted_meat_can",
+      "instr_idx": 0,
+      "instruction": "Grab that flat rectangular tin with the meat inside, next to the soup can.",
+      "keyword": "spam can",
+      "detected": true,
+      "conf": 0.585,
+      "iou": 0.0,
+      "accurate": 0.0
+    },
+    {
+      "object": "010_potted_meat_can",
+      "instr_idx": 1,
+      "instruction": "Pass me the SPAM can, the one with the yellow label.",
+      "keyword": "spam can",
+      "detected": true,
+      "conf": 0.585,
+      "iou": 0.0,
+      "accurate": 0.0
+    },
+    {
+      "object": "010_potted_meat_can",
+      "instr_idx": 2,
+      "instruction": "That small flat tin that looks like it has a peel-off top, hand it to me.",
+      "keyword": "spam can",
+      "detected": true,
+      "conf": 0.585,
+      "iou": 0.0,
+      "accurate": 0.0
+    },
+    {
+      "object": "010_potted_meat_can",
+      "instr_idx": 3,
+      "instruction": "I need some protein, can you get that SPAM tin on the desk?",
+      "keyword": "spam can",
+      "detected": true,
+      "conf": 0.585,
+      "iou": 0.0,
+      "accurate": 0.0
+    },
+    {
+      "object": "010_potted_meat_can",
+      "instr_idx": 4,
+      "instruction": "The flat metal box sitting between the soup can and the drill, grab that one.",
+      "keyword": "metal box",
+      "detected": true,
+      "conf": 0.189,
+      "iou": 0.916,
+      "accurate": 1.0
+    }
+  ]
+}

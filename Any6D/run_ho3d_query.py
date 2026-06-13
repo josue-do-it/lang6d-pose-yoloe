@@ -6,7 +6,7 @@ from bop_toolkit_lib.pose_error_custom import mssd, mspd, vsd
 
 from metrics import *
 import json
-from bop_toolkit_lib.renderer_vispy import RendererVispy
+from renderer_pyrender import RendererVispy
 from pytorch_lightning import seed_everything
 from datetime import datetime
 
@@ -21,7 +21,10 @@ if __name__ == '__main__':
     parser.add_argument("--hot3d_data_root", type=str, default="/home/miruware/ssd_4tb/dataset/ho3d", help="Path to the HO3D dataset root")
     parser.add_argument("--ycb_model_path", type=str, default="/home/miruware/ssd_4tb/dataset/ho3d/YCB_Video_Models", help="Path to the YCB Video Models")
     parser.add_argument("--ycbv_modesl_info_path", type=str, default="./models_info.json", help="Path to the YCB-V model info JSON")
+    parser.add_argument("--start_idx", type=int, default=0, help="Resume from object index")
+    parser.add_argument("--end_idx", type=int, default=13, help="Stop before this object index (exclusive)")
     parser.add_argument("--running_stride", type=int, default=10, help="Running stride")
+    parser.add_argument("--save_dir", type=str, default=None, help="Fixed save directory (for multi-run aggregation)")
 
     args = parser.parse_args()
 
@@ -29,12 +32,16 @@ if __name__ == '__main__':
     hot3d_data_root = args.hot3d_data_root
     ycbv_modesl_info_path = args.ycbv_modesl_info_path
     running_stride = args.running_stride
+    start_idx = args.start_idx
+    end_idx = args.end_idx
     anchor_path = args.anchor_path
     ycb_model_path = args.ycb_model_path
 
-    date_str = f'{datetime.now():%Y-%m-%d_%H-%M-%S}'
-    save_root = f"./results/ho3d_results/{name}/{date_str}"
-    save_results_est_path = f'{save_root}'
+    if args.save_dir:
+        save_results_est_path = args.save_dir
+    else:
+        date_str = f'{datetime.now():%Y-%m-%d_%H-%M-%S}'
+        save_results_est_path = f"./results/ho3d_results/{name}/{date_str}"
 
     os.makedirs(save_results_est_path, exist_ok=True)
 
@@ -82,7 +89,8 @@ if __name__ == '__main__':
 
     data = []
 
-    for obj_f in tqdm(obj_folder, desc='Evaluating Object'):
+    obj_folder = obj_folder[start_idx:end_idx]
+    for obj_f in tqdm(obj_folder, desc="Evaluating Object"):
 
         video_dir = os.path.join(f"{hot3d_data_root}/evaluation", obj_f)
         reader = Ho3dReader(video_dir, hot3d_data_root)
@@ -105,7 +113,7 @@ if __name__ == '__main__':
 
 
         gt_mesh = reader.get_gt_mesh(ycb_model_path)
-        gt_diameter = reader.get_gt_mesh_diamter()
+        gt_diameter = reader.get_gt_mesh_diamter(ycb_model_path)
         mesh = trimesh.load(reader.get_reference_view_1_mesh(anchor_path))
 
         gt_mesh_dict = {

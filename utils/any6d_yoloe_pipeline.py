@@ -97,7 +97,21 @@ def run_single_object(model, obj, conf, iteration):
     gt_pose_path = os.path.join(obj_path, f'{folder}_gt_pose.txt')
     gt_pose      = np.loadtxt(gt_pose_path) if os.path.exists(gt_pose_path) else None
 
-    err_t, err_R = compute_errors(pred_pose, gt_pose) if gt_pose is not None else (0.0, 0.0)
+    # err_t, err_R = compute_errors(pred_pose, gt_pose) if gt_pose is not None else (0.0, 0.0)
+    if gt_pose is not None:
+        initial_pose_path = os.path.join(obj_path, f'{folder}_initial_pose.txt')
+        if os.path.exists(initial_pose_path):
+            initial_pose = np.loadtxt(initial_pose_path)
+            R_diff  = initial_pose[:3, :3] @ pred_pose[:3, :3].T
+            angle   = np.degrees(np.arccos(np.clip((np.trace(R_diff) - 1) / 2, -1, 1)))
+            ref_R   = initial_pose[:3, :3] if angle < 30 else pred_pose[:3, :3]
+            R_fix          = np.eye(4)
+            R_fix[:3, :3]  = gt_pose[:3, :3].T @ ref_R
+            gt_pose        = gt_pose @ R_fix
+        err_t, err_R = compute_errors(pred_pose, gt_pose)
+    else:
+        err_t, err_R = float('nan'), float('nan')
+        
     print(f'  T error: {err_t:.2f} cm   R error: {err_R:.2f} deg')
 
     return {

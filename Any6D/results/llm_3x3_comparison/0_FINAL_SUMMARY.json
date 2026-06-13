@@ -1,0 +1,828 @@
+{
+  "experiment": "3 LLMs \u00d7 3 System Prompts \u00d7 45 instructions",
+  "models": [
+    "llama3.2:3b",
+    "mistral:latest",
+    "qwen2.5:3b"
+  ],
+  "system_prompts": [
+    "no_system",
+    "simple_extractor",
+    "structured_json"
+  ],
+  "iou_threshold": 0.3,
+  "summary": [
+    {
+      "System Prompt": "No System",
+      "Model": "llama3.2:3b",
+      "Det. Rate (%)": 93.3,
+      "Conf. Score (%)": 47.7,
+      "Mean IoU (%)": 56.7,
+      "Prompt Acc. (%)": 64.4,
+      "N": 45
+    },
+    {
+      "System Prompt": "No System",
+      "Model": "mistral:latest",
+      "Det. Rate (%)": 97.8,
+      "Conf. Score (%)": 49.8,
+      "Mean IoU (%)": 63.5,
+      "Prompt Acc. (%)": 71.1,
+      "N": 45
+    },
+    {
+      "System Prompt": "No System",
+      "Model": "qwen2.5:3b",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 50.9,
+      "Mean IoU (%)": 59.4,
+      "Prompt Acc. (%)": 66.7,
+      "N": 45
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "llama3.2:3b",
+      "Det. Rate (%)": 93.3,
+      "Conf. Score (%)": 43.1,
+      "Mean IoU (%)": 61.4,
+      "Prompt Acc. (%)": 68.9,
+      "N": 45
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "mistral:latest",
+      "Det. Rate (%)": 93.3,
+      "Conf. Score (%)": 43.8,
+      "Mean IoU (%)": 57.4,
+      "Prompt Acc. (%)": 64.4,
+      "N": 45
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "qwen2.5:3b",
+      "Det. Rate (%)": 95.6,
+      "Conf. Score (%)": 45.7,
+      "Mean IoU (%)": 63.4,
+      "Prompt Acc. (%)": 71.1,
+      "N": 45
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "llama3.2:3b",
+      "Det. Rate (%)": 82.2,
+      "Conf. Score (%)": 42.4,
+      "Mean IoU (%)": 49.0,
+      "Prompt Acc. (%)": 55.6,
+      "N": 45
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "mistral:latest",
+      "Det. Rate (%)": 84.4,
+      "Conf. Score (%)": 48.2,
+      "Mean IoU (%)": 51.4,
+      "Prompt Acc. (%)": 57.8,
+      "N": 45
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "qwen2.5:3b",
+      "Det. Rate (%)": 86.7,
+      "Conf. Score (%)": 45.1,
+      "Mean IoU (%)": 51.1,
+      "Prompt Acc. (%)": 57.8,
+      "N": 45
+    }
+  ],
+  "per_object": [
+    {
+      "System Prompt": "No System",
+      "Model": "llama3.2:3b",
+      "Object": "019_pitcher_base",
+      "Det. Rate (%)": 80.0,
+      "Conf. Score (%)": 30.8,
+      "Mean IoU (%)": 0.0,
+      "Prompt Acc. (%)": 0.0
+    },
+    {
+      "System Prompt": "No System",
+      "Model": "llama3.2:3b",
+      "Object": "021_bleach_cleanser",
+      "Det. Rate (%)": 80.0,
+      "Conf. Score (%)": 16.4,
+      "Mean IoU (%)": 68.1,
+      "Prompt Acc. (%)": 80.0
+    },
+    {
+      "System Prompt": "No System",
+      "Model": "llama3.2:3b",
+      "Object": "005_tomato_soup_can",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 52.5,
+      "Mean IoU (%)": 53.0,
+      "Prompt Acc. (%)": 60.0
+    },
+    {
+      "System Prompt": "No System",
+      "Model": "llama3.2:3b",
+      "Object": "004_sugar_box",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 53.2,
+      "Mean IoU (%)": 55.6,
+      "Prompt Acc. (%)": 60.0
+    },
+    {
+      "System Prompt": "No System",
+      "Model": "llama3.2:3b",
+      "Object": "red_drill",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 71.5,
+      "Mean IoU (%)": 83.3,
+      "Prompt Acc. (%)": 100.0
+    },
+    {
+      "System Prompt": "No System",
+      "Model": "llama3.2:3b",
+      "Object": "003_cracker_box",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 59.2,
+      "Mean IoU (%)": 83.2,
+      "Prompt Acc. (%)": 100.0
+    },
+    {
+      "System Prompt": "No System",
+      "Model": "llama3.2:3b",
+      "Object": "banana",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 46.4,
+      "Mean IoU (%)": 73.2,
+      "Prompt Acc. (%)": 80.0
+    },
+    {
+      "System Prompt": "No System",
+      "Model": "llama3.2:3b",
+      "Object": "006_mustard_bottle",
+      "Det. Rate (%)": 80.0,
+      "Conf. Score (%)": 53.6,
+      "Mean IoU (%)": 57.2,
+      "Prompt Acc. (%)": 60.0
+    },
+    {
+      "System Prompt": "No System",
+      "Model": "llama3.2:3b",
+      "Object": "010_potted_meat_can",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 45.3,
+      "Mean IoU (%)": 36.6,
+      "Prompt Acc. (%)": 40.0
+    },
+    {
+      "System Prompt": "No System",
+      "Model": "mistral:latest",
+      "Object": "019_pitcher_base",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 46.1,
+      "Mean IoU (%)": 18.8,
+      "Prompt Acc. (%)": 20.0
+    },
+    {
+      "System Prompt": "No System",
+      "Model": "mistral:latest",
+      "Object": "021_bleach_cleanser",
+      "Det. Rate (%)": 80.0,
+      "Conf. Score (%)": 27.2,
+      "Mean IoU (%)": 54.5,
+      "Prompt Acc. (%)": 60.0
+    },
+    {
+      "System Prompt": "No System",
+      "Model": "mistral:latest",
+      "Object": "005_tomato_soup_can",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 58.6,
+      "Mean IoU (%)": 53.0,
+      "Prompt Acc. (%)": 60.0
+    },
+    {
+      "System Prompt": "No System",
+      "Model": "mistral:latest",
+      "Object": "004_sugar_box",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 37.2,
+      "Mean IoU (%)": 55.6,
+      "Prompt Acc. (%)": 60.0
+    },
+    {
+      "System Prompt": "No System",
+      "Model": "mistral:latest",
+      "Object": "red_drill",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 64.6,
+      "Mean IoU (%)": 66.6,
+      "Prompt Acc. (%)": 80.0
+    },
+    {
+      "System Prompt": "No System",
+      "Model": "mistral:latest",
+      "Object": "003_cracker_box",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 65.3,
+      "Mean IoU (%)": 83.2,
+      "Prompt Acc. (%)": 100.0
+    },
+    {
+      "System Prompt": "No System",
+      "Model": "mistral:latest",
+      "Object": "banana",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 46.2,
+      "Mean IoU (%)": 91.4,
+      "Prompt Acc. (%)": 100.0
+    },
+    {
+      "System Prompt": "No System",
+      "Model": "mistral:latest",
+      "Object": "006_mustard_bottle",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 54.4,
+      "Mean IoU (%)": 93.7,
+      "Prompt Acc. (%)": 100.0
+    },
+    {
+      "System Prompt": "No System",
+      "Model": "mistral:latest",
+      "Object": "010_potted_meat_can",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 48.8,
+      "Mean IoU (%)": 54.9,
+      "Prompt Acc. (%)": 60.0
+    },
+    {
+      "System Prompt": "No System",
+      "Model": "qwen2.5:3b",
+      "Object": "019_pitcher_base",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 37.1,
+      "Mean IoU (%)": 37.6,
+      "Prompt Acc. (%)": 40.0
+    },
+    {
+      "System Prompt": "No System",
+      "Model": "qwen2.5:3b",
+      "Object": "021_bleach_cleanser",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 25.9,
+      "Mean IoU (%)": 72.6,
+      "Prompt Acc. (%)": 80.0
+    },
+    {
+      "System Prompt": "No System",
+      "Model": "qwen2.5:3b",
+      "Object": "005_tomato_soup_can",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 35.5,
+      "Mean IoU (%)": 53.0,
+      "Prompt Acc. (%)": 60.0
+    },
+    {
+      "System Prompt": "No System",
+      "Model": "qwen2.5:3b",
+      "Object": "004_sugar_box",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 56.1,
+      "Mean IoU (%)": 18.5,
+      "Prompt Acc. (%)": 20.0
+    },
+    {
+      "System Prompt": "No System",
+      "Model": "qwen2.5:3b",
+      "Object": "red_drill",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 78.4,
+      "Mean IoU (%)": 66.6,
+      "Prompt Acc. (%)": 80.0
+    },
+    {
+      "System Prompt": "No System",
+      "Model": "qwen2.5:3b",
+      "Object": "003_cracker_box",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 55.6,
+      "Mean IoU (%)": 83.2,
+      "Prompt Acc. (%)": 100.0
+    },
+    {
+      "System Prompt": "No System",
+      "Model": "qwen2.5:3b",
+      "Object": "banana",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 60.5,
+      "Mean IoU (%)": 91.4,
+      "Prompt Acc. (%)": 100.0
+    },
+    {
+      "System Prompt": "No System",
+      "Model": "qwen2.5:3b",
+      "Object": "006_mustard_bottle",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 62.0,
+      "Mean IoU (%)": 93.7,
+      "Prompt Acc. (%)": 100.0
+    },
+    {
+      "System Prompt": "No System",
+      "Model": "qwen2.5:3b",
+      "Object": "010_potted_meat_can",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 46.5,
+      "Mean IoU (%)": 18.3,
+      "Prompt Acc. (%)": 20.0
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "llama3.2:3b",
+      "Object": "019_pitcher_base",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 11.3,
+      "Mean IoU (%)": 75.2,
+      "Prompt Acc. (%)": 80.0
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "llama3.2:3b",
+      "Object": "021_bleach_cleanser",
+      "Det. Rate (%)": 60.0,
+      "Conf. Score (%)": 28.9,
+      "Mean IoU (%)": 54.3,
+      "Prompt Acc. (%)": 60.0
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "llama3.2:3b",
+      "Object": "005_tomato_soup_can",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 26.3,
+      "Mean IoU (%)": 53.0,
+      "Prompt Acc. (%)": 60.0
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "llama3.2:3b",
+      "Object": "004_sugar_box",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 42.5,
+      "Mean IoU (%)": 37.1,
+      "Prompt Acc. (%)": 40.0
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "llama3.2:3b",
+      "Object": "red_drill",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 73.3,
+      "Mean IoU (%)": 83.3,
+      "Prompt Acc. (%)": 100.0
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "llama3.2:3b",
+      "Object": "003_cracker_box",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 44.6,
+      "Mean IoU (%)": 83.2,
+      "Prompt Acc. (%)": 100.0
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "llama3.2:3b",
+      "Object": "banana",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 75.9,
+      "Mean IoU (%)": 91.4,
+      "Prompt Acc. (%)": 100.0
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "llama3.2:3b",
+      "Object": "006_mustard_bottle",
+      "Det. Rate (%)": 80.0,
+      "Conf. Score (%)": 38.3,
+      "Mean IoU (%)": 74.9,
+      "Prompt Acc. (%)": 80.0
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "llama3.2:3b",
+      "Object": "010_potted_meat_can",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 46.7,
+      "Mean IoU (%)": 0.3,
+      "Prompt Acc. (%)": 0.0
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "mistral:latest",
+      "Object": "019_pitcher_base",
+      "Det. Rate (%)": 80.0,
+      "Conf. Score (%)": 15.9,
+      "Mean IoU (%)": 37.6,
+      "Prompt Acc. (%)": 40.0
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "mistral:latest",
+      "Object": "021_bleach_cleanser",
+      "Det. Rate (%)": 60.0,
+      "Conf. Score (%)": 14.7,
+      "Mean IoU (%)": 54.3,
+      "Prompt Acc. (%)": 60.0
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "mistral:latest",
+      "Object": "005_tomato_soup_can",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 33.1,
+      "Mean IoU (%)": 35.4,
+      "Prompt Acc. (%)": 40.0
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "mistral:latest",
+      "Object": "004_sugar_box",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 49.9,
+      "Mean IoU (%)": 37.1,
+      "Prompt Acc. (%)": 40.0
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "mistral:latest",
+      "Object": "red_drill",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 75.4,
+      "Mean IoU (%)": 83.3,
+      "Prompt Acc. (%)": 100.0
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "mistral:latest",
+      "Object": "003_cracker_box",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 44.3,
+      "Mean IoU (%)": 83.2,
+      "Prompt Acc. (%)": 100.0
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "mistral:latest",
+      "Object": "banana",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 75.9,
+      "Mean IoU (%)": 91.4,
+      "Prompt Acc. (%)": 100.0
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "mistral:latest",
+      "Object": "006_mustard_bottle",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 40.6,
+      "Mean IoU (%)": 75.9,
+      "Prompt Acc. (%)": 80.0
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "mistral:latest",
+      "Object": "010_potted_meat_can",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 44.2,
+      "Mean IoU (%)": 18.3,
+      "Prompt Acc. (%)": 20.0
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "qwen2.5:3b",
+      "Object": "019_pitcher_base",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 17.8,
+      "Mean IoU (%)": 56.4,
+      "Prompt Acc. (%)": 60.0
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "qwen2.5:3b",
+      "Object": "021_bleach_cleanser",
+      "Det. Rate (%)": 60.0,
+      "Conf. Score (%)": 19.5,
+      "Mean IoU (%)": 54.3,
+      "Prompt Acc. (%)": 60.0
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "qwen2.5:3b",
+      "Object": "005_tomato_soup_can",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 35.7,
+      "Mean IoU (%)": 53.0,
+      "Prompt Acc. (%)": 60.0
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "qwen2.5:3b",
+      "Object": "004_sugar_box",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 52.5,
+      "Mean IoU (%)": 37.1,
+      "Prompt Acc. (%)": 40.0
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "qwen2.5:3b",
+      "Object": "red_drill",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 75.2,
+      "Mean IoU (%)": 83.3,
+      "Prompt Acc. (%)": 100.0
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "qwen2.5:3b",
+      "Object": "003_cracker_box",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 43.5,
+      "Mean IoU (%)": 83.2,
+      "Prompt Acc. (%)": 100.0
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "qwen2.5:3b",
+      "Object": "banana",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 74.7,
+      "Mean IoU (%)": 91.4,
+      "Prompt Acc. (%)": 100.0
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "qwen2.5:3b",
+      "Object": "006_mustard_bottle",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 44.7,
+      "Mean IoU (%)": 93.7,
+      "Prompt Acc. (%)": 100.0
+    },
+    {
+      "System Prompt": "Simple Extractor",
+      "Model": "qwen2.5:3b",
+      "Object": "010_potted_meat_can",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 47.8,
+      "Mean IoU (%)": 18.3,
+      "Prompt Acc. (%)": 20.0
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "llama3.2:3b",
+      "Object": "019_pitcher_base",
+      "Det. Rate (%)": 20.0,
+      "Conf. Score (%)": 1.0,
+      "Mean IoU (%)": 0.0,
+      "Prompt Acc. (%)": 0.0
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "llama3.2:3b",
+      "Object": "021_bleach_cleanser",
+      "Det. Rate (%)": 20.0,
+      "Conf. Score (%)": 2.6,
+      "Mean IoU (%)": 18.1,
+      "Prompt Acc. (%)": 20.0
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "llama3.2:3b",
+      "Object": "005_tomato_soup_can",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 21.5,
+      "Mean IoU (%)": 53.0,
+      "Prompt Acc. (%)": 60.0
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "llama3.2:3b",
+      "Object": "004_sugar_box",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 57.8,
+      "Mean IoU (%)": 18.6,
+      "Prompt Acc. (%)": 20.0
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "llama3.2:3b",
+      "Object": "red_drill",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 82.9,
+      "Mean IoU (%)": 83.3,
+      "Prompt Acc. (%)": 100.0
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "llama3.2:3b",
+      "Object": "003_cracker_box",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 41.8,
+      "Mean IoU (%)": 83.2,
+      "Prompt Acc. (%)": 100.0
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "llama3.2:3b",
+      "Object": "banana",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 75.9,
+      "Mean IoU (%)": 91.4,
+      "Prompt Acc. (%)": 100.0
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "llama3.2:3b",
+      "Object": "006_mustard_bottle",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 45.5,
+      "Mean IoU (%)": 93.7,
+      "Prompt Acc. (%)": 100.0
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "llama3.2:3b",
+      "Object": "010_potted_meat_can",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 52.2,
+      "Mean IoU (%)": 0.0,
+      "Prompt Acc. (%)": 0.0
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "mistral:latest",
+      "Object": "019_pitcher_base",
+      "Det. Rate (%)": 60.0,
+      "Conf. Score (%)": 11.9,
+      "Mean IoU (%)": 37.6,
+      "Prompt Acc. (%)": 40.0
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "mistral:latest",
+      "Object": "021_bleach_cleanser",
+      "Det. Rate (%)": 0.0,
+      "Conf. Score (%)": 0.0,
+      "Mean IoU (%)": 0.0,
+      "Prompt Acc. (%)": 0.0
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "mistral:latest",
+      "Object": "005_tomato_soup_can",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 44.6,
+      "Mean IoU (%)": 70.7,
+      "Prompt Acc. (%)": 80.0
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "mistral:latest",
+      "Object": "004_sugar_box",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 56.3,
+      "Mean IoU (%)": 37.1,
+      "Prompt Acc. (%)": 40.0
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "mistral:latest",
+      "Object": "red_drill",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 79.2,
+      "Mean IoU (%)": 66.6,
+      "Prompt Acc. (%)": 80.0
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "mistral:latest",
+      "Object": "003_cracker_box",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 61.8,
+      "Mean IoU (%)": 83.2,
+      "Prompt Acc. (%)": 100.0
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "mistral:latest",
+      "Object": "banana",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 75.3,
+      "Mean IoU (%)": 91.4,
+      "Prompt Acc. (%)": 100.0
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "mistral:latest",
+      "Object": "006_mustard_bottle",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 51.0,
+      "Mean IoU (%)": 75.9,
+      "Prompt Acc. (%)": 80.0
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "mistral:latest",
+      "Object": "010_potted_meat_can",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 54.0,
+      "Mean IoU (%)": 0.0,
+      "Prompt Acc. (%)": 0.0
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "qwen2.5:3b",
+      "Object": "019_pitcher_base",
+      "Det. Rate (%)": 40.0,
+      "Conf. Score (%)": 7.4,
+      "Mean IoU (%)": 0.0,
+      "Prompt Acc. (%)": 0.0
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "qwen2.5:3b",
+      "Object": "021_bleach_cleanser",
+      "Det. Rate (%)": 40.0,
+      "Conf. Score (%)": 17.2,
+      "Mean IoU (%)": 36.2,
+      "Prompt Acc. (%)": 40.0
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "qwen2.5:3b",
+      "Object": "005_tomato_soup_can",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 32.3,
+      "Mean IoU (%)": 35.4,
+      "Prompt Acc. (%)": 40.0
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "qwen2.5:3b",
+      "Object": "004_sugar_box",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 61.5,
+      "Mean IoU (%)": 55.6,
+      "Prompt Acc. (%)": 60.0
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "qwen2.5:3b",
+      "Object": "red_drill",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 79.5,
+      "Mean IoU (%)": 83.3,
+      "Prompt Acc. (%)": 100.0
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "qwen2.5:3b",
+      "Object": "003_cracker_box",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 48.8,
+      "Mean IoU (%)": 83.2,
+      "Prompt Acc. (%)": 100.0
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "qwen2.5:3b",
+      "Object": "banana",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 65.0,
+      "Mean IoU (%)": 73.2,
+      "Prompt Acc. (%)": 80.0
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "qwen2.5:3b",
+      "Object": "006_mustard_bottle",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 39.5,
+      "Mean IoU (%)": 74.9,
+      "Prompt Acc. (%)": 80.0
+    },
+    {
+      "System Prompt": "Structured JSON",
+      "Model": "qwen2.5:3b",
+      "Object": "010_potted_meat_can",
+      "Det. Rate (%)": 100.0,
+      "Conf. Score (%)": 54.6,
+      "Mean IoU (%)": 18.3,
+      "Prompt Acc. (%)": 20.0
+    }
+  ]
+}

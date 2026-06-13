@@ -14,6 +14,8 @@ import cv2
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from matplotlib.gridspec import GridSpec
+import trimesh
+
 
 BASE_DIR         = os.path.expanduser('~/open-vocabulary-6d-pose-yoloe')
 ANY6D_DIR        = os.path.join(BASE_DIR, 'Any6D')
@@ -52,6 +54,13 @@ def run_any6d_docker(
     cv2.imwrite(os.path.join(save_path, 'mask.png'),  mask_bool.astype(np.uint8) * 255)
     np.savetxt(os.path.join(save_path, 'K.txt'), K)
     shutil.copy2(mesh_path, os.path.join(save_path, 'mesh.obj'))
+
+    # mesh = trimesh.load(mesh_path)
+    # R1 = trimesh.transformations.rotation_matrix(np.radians(0),  [0, 1, 0])
+    # R2 = trimesh.transformations.rotation_matrix(np.radians(92), [0, 0, 1])
+    # R3 = trimesh.transformations.rotation_matrix(np.radians(90), [1, 0, 0])
+    # mesh.apply_transform(R1 @ R2 @ R3)
+    # mesh.export(os.path.join(save_path, 'mesh.obj'))
 
     rel_path   = os.path.relpath(save_path, ANY6D_DIR)
     run_script = f"""
@@ -117,7 +126,142 @@ print('translation (m):', pose[:3, 3].tolist())
     return pred_pose
 
 
+# ── Any6D Docker — BATCH (one Docker call per sequence) ───────────────────────
+
+def run_any6d_docker_batch(frames_data, mesh_path, save_dir, name_prefix='batch',
+                            iteration=5):
+    """
+    Run Any6D on a list of frames in ONE Docker subprocess.
+    FoundationPose is initialized once → much faster for many frames.
+
+    frames_data : list of dicts, each with:
+        id         : str  (unique frame identifier, e.g. '00042')
+        color_path : str  (RGB image path, host side)
+        depth_path : str  (depth PNG path, already in uint16 mm)
+        mask_bool  : (H,W) boolean ndarray
+        K          : (3,3) intrinsics
+
+    mesh_path  : path to .obj mesh
+    save_dir   : output folder (MUST be inside Any6D/ for Docker access)
+    Returns:
+        dict { frame_id : (4,4) pose or None }
+    """
+    os.makedirs(save_dir, exist_ok=True)
+
+    # ── Save all frame data to disk ───────────────────────────────────────────
+    frame_ids = []
+    for fd in frames_data:
+        fid  = str(fd['id'])
+        fdir = os.path.join(save_dir, fid)
+        os.makedirs(fdir, exist_ok=True)
+        cv2.imwrite(os.path.join(fdir, 'color.png'), cv2.imread(fd['color_path']))
+        cv2.imwrite(os.path.join(fdir, 'depth.png'),
+                    cv2.imread(fd['depth_path'], cv2.IMREAD_ANYDEPTH))
+        cv2.imwrite(os.path.join(fdir, 'mask.png'),
+                    fd['mask_bool'].astype(np.uint8) * 255)
+        np.savetxt(os.path.join(fdir, 'K.txt'), fd['K'])
+        frame_ids.append(fid)
+
+    shutil.copy2(mesh_path, os.path.join(save_dir, 'mesh.obj'))
+
+    rel_dir  = os.path.relpath(save_dir, ANY6D_DIR)
+    ids_repr = repr(frame_ids)
+
+    run_script = f"""
+import sys, os, json, numpy as np, cv2, trimesh
+sys.path.insert(0, '/workspace/foundationpose/mycpp/build')
+import nvdiffrast.torch as dr
+from estimater import Any6D
+from pytorch_lightning import seed_everything
+
+seed_everything(0)
+save_dir   = '/workspace/{rel_dir}'
+frame_ids  = {ids_repr}
+
+glctx = dr.RasterizeCudaContext()
+mesh  = trimesh.load(os.path.join(save_dir, 'mesh.obj'))
+est   = Any6D(symmetry_tfs=None, mesh=mesh, debug_dir=save_dir, debug=0, glctx=glctx)
+
+results = {{}}
+for fid in frame_ids:
+    fdir  = os.path.join(save_dir, fid)
+    color = cv2.cvtColor(cv2.imread(os.path.join(fdir, 'color.png')), cv2.COLOR_BGR2RGB)
+    depth = cv2.imread(os.path.join(fdir, 'depth.png'), cv2.IMREAD_ANYDEPTH).astype(np.float32) / 1000.0
+    mask  = cv2.imread(os.path.join(fdir, 'mask.png'), cv2.IMREAD_GRAYSCALE).astype(bool)
+    K     = np.loadtxt(os.path.join(fdir, 'K.txt'))
+    print(f'[frame {{fid}}]  depth range [{{depth.min():.3f}}, {{depth.max():.3f}}] m  mask={{mask.sum()}} px')
+    try:
+        pose = est.register_any6d(K=K, rgb=color, depth=depth, ob_mask=mask,
+                                  iteration={iteration}, name=fid)
+        np.savetxt(os.path.join(fdir, 'pred_pose.txt'), pose)
+        results[fid] = 'OK'
+        print(f'  POSE_SAVED  t={{pose[:3,3].tolist()}}')
+    except Exception as e:
+        results[fid] = f'ERROR: {{e}}'
+        print(f'  POSE_FAILED: {{e}}')
+
+with open(os.path.join(save_dir, 'batch_results.json'), 'w') as f:
+    json.dump(results, f)
+print('BATCH_DONE')
+"""
+    script_path = os.path.join(ANY6D_DIR, '_run_any6d_batch.py')
+    with open(script_path, 'w') as f:
+        f.write(run_script)
+
+    skip_kw = ['FutureWarning', 'torch.load', 'weights_only', 'ckpt_dir',
+               'pytree', 'torch.set_default', 'torch.cuda.amp', 'pickle',
+               'allowlist', 'open an issue']
+
+    process = subprocess.Popen(
+        ['docker', 'compose', 'run', '--rm', '--entrypoint', '', 'any6d',
+         'bash', '-c', 'cd /workspace && python _run_any6d_batch.py'],
+        cwd=ANY6D_DIR,
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+        text=True, bufsize=1,
+    )
+    for line in process.stdout:
+        line = line.rstrip()
+        if not any(k in line for k in skip_kw):
+            print(f'  {line}')
+    process.wait()
+
+    os.remove(script_path)
+    subprocess.run(['chmod', '-R', '777', save_dir], capture_output=True)
+
+    # ── Read results ──────────────────────────────────────────────────────────
+    poses = {}
+    for fid in frame_ids:
+        pose_path = os.path.join(save_dir, fid, 'pred_pose.txt')
+        poses[fid] = np.loadtxt(pose_path) if os.path.exists(pose_path) else None
+
+    return poses
+
+
 # ── Metrics ───────────────────────────────────────────────────────────────────
+
+def compute_mask_metrics(pred_mask, gt_mask):
+    """
+    Compute binary mask quality metrics using cv2 + numpy.
+
+    Args:
+        pred_mask : (H, W) bool — predicted mask (from YOLOE/SAM2)
+        gt_mask   : (H, W) bool — ground truth mask (from dataset)
+    Returns:
+        dict with keys: IoU, Dice, Precision, Recall
+    """
+    pred  = pred_mask.astype(np.uint8)
+    gt    = gt_mask.astype(np.uint8)
+    inter = float(cv2.bitwise_and(pred, gt).sum())
+    union = float(cv2.bitwise_or(pred, gt).sum())
+    p_sum = float(pred.sum())
+    g_sum = float(gt.sum())
+    return {
+        'IoU'      : inter / union        if union > 0            else 0.0,
+        'Dice'     : 2*inter/(p_sum+g_sum) if (p_sum+g_sum) > 0  else 0.0,
+        'Precision': inter / p_sum        if p_sum > 0            else 0.0,
+        'Recall'   : inter / g_sum        if g_sum > 0            else 0.0,
+    }
+
 
 def compute_errors(pred_pose, gt_pose):
     """
