@@ -144,6 +144,21 @@ models/
 Any6D/dataset/
 results/
 
-# ── Misc ──────────────────────────────────────────────────────
+# ── Misc & fichiers locaux ────────────────────────────────────
 output.png
 notebooks/color.png
+mobileclip2_b.ts
+masks_XMem.zip
+thesis_figures.zip
+master_env/
+Any6D/tmp_*/
+Any6D/pipeline_test/
+Any6D/test_input/
+Any6D/wget-log*
+Any6D/ycbv_base.zip
+Any6D/ycbv_models.zip
+Any6D/ycbv_test_bop19.zip
+Any6D/yoloe/
+pybullet/
+Any6D/pybullet/
+"hortlog -sne --all"
