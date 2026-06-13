@@ -138,6 +138,12 @@ Any6D/test_input/
 Any6D/results/lm_pipeline/
 Any6D/results/ycbv_pipeline/
 
+# ── Datasets & models (trop volumineux) ──────────────────────
+datasets/
+models/
+Any6D/dataset/
+results/
+
 # ── Misc ──────────────────────────────────────────────────────
 output.png
-"hortlog -sne --all"
+notebooks/color.png
