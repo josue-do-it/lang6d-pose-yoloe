@@ -1,0 +1,25 @@
+{
+  "method": "LLM+YOLOE+Any6D \u2192 PyBullet Franka Panda",
+  "instruction": "Grab me this green drill",
+  "keyword": "green drill",
+  "yoloe_conf": 0.46273714303970337,
+  "T_cam_m": [
+    0.02879319339990616,
+    -0.10944131016731262,
+    1.0297812223434448
+  ],
+  "obj_pos_sim_m": [
+    0.5527960495604002,
+    1.4983624478209482e-11,
+    0.5199899999970656
+  ],
+  "obj_dims_m": [
+    0.17,
+    0.08,
+    0.2
+  ],
+  "finger_closed_m": 0.025,
+  "n_contacts": 5,
+  "lift_delta_m": 0.08059741965452549,
+  "grasp_success": true
+}

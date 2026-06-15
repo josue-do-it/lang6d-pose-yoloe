@@ -1,0 +1,81 @@
+/opt/conda/envs/Any6D/lib/python3.9/site-packages/kornia/feature/lightglue.py:44: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  @torch.cuda.amp.custom_fwd(cast_inputs=torch.float32)
+/opt/conda/envs/Any6D/lib/python3.9/site-packages/transformers/utils/generic.py:311: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  torch.utils._pytree._register_pytree_node(
+[__init__()] self.h5_file:None
+/workspace/foundationpose/learning/training/predict_score.py:151: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  ckpt = torch.load(ckpt_dir)
+[__init__()] self.h5_file:
+/workspace/foundationpose/learning/training/predict_pose_refine.py:138: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  ckpt = torch.load(ckpt_dir)
+[seed_everything()] Seed set to 0
+[__init__()] self.h5_file:None
+/workspace/foundationpose/learning/training/predict_score.py:151: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  ckpt = torch.load(ckpt_dir)
+[__init__()] self.h5_file:
+/workspace/foundationpose/learning/training/predict_pose_refine.py:138: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  ckpt = torch.load(ckpt_dir)
+/opt/conda/envs/Any6D/lib/python3.9/site-packages/torch/__init__.py:955: UserWarning: torch.set_default_tensor_type() is deprecated as of PyTorch 2.1, please use torch.set_default_dtype() and torch.set_default_device() as alternatives. (Triggered internally at ../torch/csrc/tensor/python_tensor.cpp:432.)
+  _C._set_default_tensor_type(t)
+[Oracle-LLM] YOLOE loaded.
+Warp 1.0.2 initialized:
+   CUDA Toolkit 11.5, Driver 13.0
+   Devices:
+     "cpu"      : "x86_64"
+     "cuda:0"   : "NVIDIA L4" (22 GiB, sm_89, mempool enabled)
+   Kernel cache:
+     /root/.cache/warp/1.0.2
+[Oracle-LLM] Any6D models loaded.
+
+[mustard bottle] scene=000052 frame=574
+  YOLOE: prompt="condiment bottle" score=0.6094 px=17938
+Module foundationpose.Utils load on device 'cuda:0' took 16.10 ms
+  t_err=27.9mm  R_err=135.1°  ADD=87.4mm  ADD-S=30.8mm  thr=19.6mm
+
+[bleach cleanser] scene=000057 frame=1040
+  YOLOE: no detection with GT prompts — skip
+
+[tomato soup can] scene=000059 frame=1539
+  YOLOE: prompt="canned soup" score=0.3493 px=10423
+  t_err=172.6mm  R_err=154.0°  ADD=186.6mm  ADD-S=122.9mm  thr=12.1mm
+
+[cracker box] scene=000050 frame=620
+  YOLOE: prompt="snack box" score=0.4086 px=20827
+  t_err=27.4mm  R_err=177.3°  ADD=154.1mm  ADD-S=40.5mm  thr=27.0mm
+
+[potted meat can] scene=000049 frame=36
+  YOLOE: prompt="spam can" score=0.5849 px=6290
+  t_err=248.8mm  R_err=110.6°  ADD=252.2mm  ADD-S=194.6mm  thr=13.0mm
+
+[pitcher base] scene=000056 frame=596
+  YOLOE: no detection with GT prompts — skip
+
+[sugar box] scene=000049 frame=36
+  YOLOE: prompt="sugar box" score=0.6838 px=10097
+  t_err=188.4mm  R_err=21.9°  ADD=188.2mm  ADD-S=124.8mm  thr=19.8mm
+
+==============================================================================================
+Object                     t_err      R_err       ADD     ADD-S      thr    ADD    ADS
+                            (mm)      (deg)      (mm)      (mm)     10%d
+----------------------------------------------------------------------------------------------
+mustard bottle              27.9      135.1      87.4      30.8     19.6     NO     NO
+tomato soup can            172.6      154.0     186.6     122.9     12.1     NO     NO
+cracker box                 27.4      177.3     154.1      40.5     27.0     NO     NO
+potted meat can            248.8      110.6     252.2     194.7     12.9     NO     NO
+sugar box                  188.4       21.9     188.2     124.8     19.8     NO     NO
+----------------------------------------------------------------------------------------------
+
+AR (ADD   < 10%d) : 0.0%  (0/5)
+AR (ADD-S < 10%d) : 0.0%  (0/5)
+
+Results saved to /workspace/results/eval_oracle_llm/summary.json
+num original candidates = 252
+num of pose after clustering: 252
+num original candidates = 252
+num of pose after clustering: 252
+num original candidates = 252
+num of pose after clustering: 252
+num original candidates = 252
+num of pose after clustering: 252
+num original candidates = 252
+num of pose after clustering: 252

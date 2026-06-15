@@ -1,0 +1,86 @@
+/opt/conda/envs/Any6D/lib/python3.9/site-packages/kornia/feature/lightglue.py:44: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  @torch.cuda.amp.custom_fwd(cast_inputs=torch.float32)
+/opt/conda/envs/Any6D/lib/python3.9/site-packages/transformers/utils/generic.py:311: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  torch.utils._pytree._register_pytree_node(
+[__init__()] self.h5_file:None
+/workspace/foundationpose/learning/training/predict_score.py:151: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  ckpt = torch.load(ckpt_dir)
+[__init__()] self.h5_file:
+/workspace/foundationpose/learning/training/predict_pose_refine.py:138: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  ckpt = torch.load(ckpt_dir)
+[seed_everything()] Seed set to 0
+[__init__()] self.h5_file:None
+/workspace/foundationpose/learning/training/predict_score.py:151: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  ckpt = torch.load(ckpt_dir)
+[__init__()] self.h5_file:
+/workspace/foundationpose/learning/training/predict_pose_refine.py:138: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  ckpt = torch.load(ckpt_dir)
+/opt/conda/envs/Any6D/lib/python3.9/site-packages/torch/__init__.py:955: UserWarning: torch.set_default_tensor_type() is deprecated as of PyTorch 2.1, please use torch.set_default_dtype() and torch.set_default_device() as alternatives. (Triggered internally at ../torch/csrc/tensor/python_tensor.cpp:432.)
+  _C._set_default_tensor_type(t)
+Warp 1.0.2 initialized:
+   CUDA Toolkit 11.5, Driver 13.0
+   Devices:
+     "cpu"      : "x86_64"
+     "cuda:0"   : "NVIDIA L4" (22 GiB, sm_89, mempool enabled)
+   Kernel cache:
+     /root/.cache/warp/1.0.2
+[Any6D] Models loaded.
+
+[mustard bottle] scene=000052 frame=574
+  mask pixels: 19626
+Module foundationpose.Utils load on device 'cuda:0' took 15.51 ms
+  t_err=26.3mm  R_err=134.0°  ADD=87.2mm  ADD-S=30.8mm  thr=19.6mm
+
+[bleach cleanser] scene=000057 frame=1040
+  mask pixels: 39104
+  t_err=40.2mm  R_err=120.0°  ADD=118.5mm  ADD-S=53.7mm  thr=26.0mm
+
+[tomato soup can] scene=000059 frame=1539
+  mask pixels: 11748
+  t_err=53.4mm  R_err=153.1°  ADD=85.4mm  ADD-S=25.2mm  thr=12.1mm
+
+[cracker box] scene=000050 frame=620
+  mask pixels: 20480
+  t_err=28.4mm  R_err=177.9°  ADD=153.9mm  ADD-S=40.5mm  thr=27.0mm
+
+[potted meat can] scene=000049 frame=36
+  mask pixels: 11481
+  t_err=82.7mm  R_err=128.2°  ADD=104.2mm  ADD-S=48.9mm  thr=13.0mm
+
+[pitcher base] scene=000056 frame=596
+  mask pixels: 60098
+  t_err=38.3mm  R_err=144.5°  ADD=152.8mm  ADD-S=47.0mm  thr=26.0mm
+
+[sugar box] scene=000049 frame=36
+  mask pixels: 26610
+  t_err=25.1mm  R_err=171.9°  ADD=109.4mm  ADD-S=36.4mm  thr=19.8mm
+
+==========================================================================================
+Object                     t_err      R_err       ADD     ADD-S      thr    ADD    ADS
+                            (mm)      (deg)      (mm)      (mm)     10%d
+------------------------------------------------------------------------------------------
+mustard bottle              26.3      134.0      87.2      30.8     19.6     NO     NO
+bleach cleanser             40.2      120.0     118.5      53.7     26.0     NO     NO
+tomato soup can             53.4      153.1      85.4      25.2     12.1     NO     NO
+cracker box                 28.4      177.9     153.9      40.5     27.0     NO     NO
+potted meat can             82.7      128.2     104.2      48.9     13.0     NO     NO
+pitcher base                38.3      144.5     152.8      47.0     26.0     NO     NO
+sugar box                   25.1      171.9     109.4      36.4     19.8     NO     NO
+------------------------------------------------------------------------------------------
+
+AR  ADD   < 10%d : 0.0%  (0/7)
+AR  ADD-S < 10%d : 0.0%  (0/7)
+num original candidates = 252
+num of pose after clustering: 252
+num original candidates = 252
+num of pose after clustering: 252
+num original candidates = 252
+num of pose after clustering: 252
+num original candidates = 252
+num of pose after clustering: 252
+num original candidates = 252
+num of pose after clustering: 252
+num original candidates = 252
+num of pose after clustering: 252
+num original candidates = 252
+num of pose after clustering: 252

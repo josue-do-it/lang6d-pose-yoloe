@@ -1,0 +1,9 @@
+{
+  "dataset": "YCB-V BOP",
+  "n_frames": 14,
+  "mean_ADD": 0.0,
+  "mean_ADD-S": 0.0,
+  "mean_AR": 1.1,
+  "mean_R_error": 140.8,
+  "mean_T_error": 7.26
+}

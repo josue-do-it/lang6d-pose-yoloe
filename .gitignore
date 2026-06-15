@@ -26,7 +26,14 @@ dist/
 *.safetensors
 
 # ── Results & outputs ─────────────────────────────────────────
-Any6D/results/
+# Maillages 3D (trop volumineux — centaines de MB)
+Any6D/results/**/*.obj
+# Séquences PNG par frame (trop nombreuses)
+Any6D/results/**/pipeline/**/*.png
+Any6D/results/ho3d_pipeline/run_full/*/
+# Per-frame JSON outputs
+Any6D/results/lm_pipeline/
+Any6D/results/ycbv_pipeline/stride5/obj_*.json
 notebooks/outputs/
 
 # ── Dataset content (keep folder structure) ───────────────────
@@ -135,14 +142,12 @@ Any6D/pipeline_test/
 Any6D/test_input/
 
 # ── Per-frame JSON results (trop volumineux) ──────────────────
-Any6D/results/lm_pipeline/
-Any6D/results/ycbv_pipeline/
+# (déjà géré dans la section résultats ci-dessus)
 
 # ── Datasets & models (trop volumineux) ──────────────────────
 datasets/
 models/
 Any6D/dataset/
-results/
 
 # ── Misc & fichiers locaux ────────────────────────────────────
 output.png
