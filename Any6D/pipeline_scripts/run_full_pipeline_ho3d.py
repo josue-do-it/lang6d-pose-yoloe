@@ -1,16 +1,84 @@
 """
-Full pipeline: User instruction → LLM keyword extractor → YOLOE mask → Any6D → BOP metrics
-HO3D dataset, 13 evaluation sequences.
+Full pipeline: User instruction → LLM keyword → YOLOE mask → Any6D → BOP metrics
+Dataset: HO3D v3 (hand-object interaction, 13 sequences, YCB objects).
+
+Pipeline overview
+-----------------
+HO3D differs from LINEMOD and YCBV because objects are always partially occluded
+by a hand.  This changes several pipeline parameters:
+
+  1. LLM uses a HO3D-specific CALIBRATED_SYSTEM with examples tailored to the
+     5 YCB object categories that appear in HO3D sequences.
+  2. YOLOE uses conf_fallbacks=(0.05, 0.03) because hand occlusion lowers
+     detection confidence.  If the primary threshold (0.1) finds nothing, two
+     lower thresholds are tried in sequence before falling back to GT mask.
+  3. Images are loaded with cv2.imread() (BGR) and passed to YOLOE as-is
+     (bgr_input=True).  Converting to RGB would change results vs the original
+     paper pipeline, so this is preserved exactly.
+  4. Per-frame RGB+depth+mask visualisations are saved alongside pose results
+     to support qualitative analysis (useful for hand-occlusion debugging).
+
+Sequences and objects
+---------------------
+  MPM10-14 → SPAM (potted meat can, YCB obj 10)
+  AP10-14  → pitcher base (YCB obj 11)
+  SB11,13  → bleach cleanser (YCB obj 12)
+  SM1      → mustard bottle (YCB obj 5)
+
+Dataset layout (inside Docker)
+-------------------------------
+/dataset/ho3d/
+    evaluation/MPM10/ … SM1/
+        rgb/   (JPEG)
+        depth/ (PNG uint16 mm)
+        meta/  (pkl with K, gt_R, gt_t, obj_id)
+
+  Mount:  host /home/josue_aims_ac_za/ssd_4tb/dataset/ho3d → container /dataset/ho3d
+
+YOLOE parameters for this dataset
+-----------------------------------
+conf=0.1, conf_fallbacks=(0.05, 0.03), use_first_det=True, bgr_input=True.
+
+Metrics
+-------
+ADD, ADD-S, MSSD, MSPD, AR (BOP standard), VSD, R_error (°), T_error (cm).
+VSD is computed only for HO3D because the original paper reports it.
+
+Run inside Docker
+-----------------
+    # Full evaluation (all 13 sequences)
+    /opt/conda/envs/Any6D/bin/python3 /workspace/pipeline_scripts/run_full_pipeline_ho3d.py
+
+    # Quick test — one sequence, 5 frames
+    /opt/conda/envs/Any6D/bin/python3 /workspace/pipeline_scripts/run_full_pipeline_ho3d.py \\
+        --sequences MPM10 --max_frames 5
 """
-import copy, sys, os, re, json
+import sys, os, json, argparse
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import requests
-sys.path.insert(0, '/workspace/yoloe')
-from ultralytics import YOLOE as _YOLOE
+import numpy as np
+import cv2
+import trimesh
+import pandas as pd
+from tqdm import tqdm
+from datetime import datetime
 
-# ── Natural language instructions (one per HO3D sequence) ─────────────────────
+sys.path.insert(0, '/workspace')
+sys.path.insert(0, '/workspace/yoloe')
+
+from core.llm import call_llm, parse_llm
+from core.detection import get_detection_mask
+from core.metrics_utils import nanmean
+
+from foundationpose.datareader import Ho3dReader
+from estimater import *
+from bop_toolkit_lib.pose_error_custom import mssd, mspd, vsd
+from metrics import *
+from renderer_pyrender import RendererVispy
+from pytorch_lightning import seed_everything
+
+# ── HO3D sequence instructions ────────────────────────────────────────────────
 HO3D_INSTRUCTIONS = {
     "MPM10": "Hand me that flat blue SPAM tin on the table",
     "MPM11": "Pick me that small rectangular meat can please",
@@ -27,7 +95,6 @@ HO3D_INSTRUCTIONS = {
     "SM1":   "Hand me the yellow mustard bottle on the tray",
 }
 
-# ── Calibrated system prompt: keyword extractor, 1-3 words, 40 examples ───────
 CALIBRATED_SYSTEM = """\
 You are a visual keyword extractor for YOLOE, an open-vocabulary object segmentation model.
 
@@ -83,71 +150,15 @@ Examples from our dataset (instruction → keyword):
 "That flat tin sitting next to the soup can" → spam can
 """
 
-OLLAMA_URL = "http://172.18.0.1:11434/api/generate"
-LLM_MODEL  = "mistral:latest"
 
-def call_llm(instruction: str) -> str:
-    try:
-        r = requests.post(OLLAMA_URL,
-                          json={"model": LLM_MODEL, "stream": False,
-                                "system": CALIBRATED_SYSTEM, "prompt": instruction},
-                          timeout=30)
-        r.raise_for_status()
-        return r.json().get("response", "").strip()
-    except Exception as e:
-        return ""
+def _extract_keyword(instruction: str, llm_model: str) -> str:
+    raw = call_llm(instruction, CALIBRATED_SYSTEM, llm_model)
+    kw  = parse_llm(raw)
+    return kw if kw and len(kw.split()) <= 5 else "object"
 
-def parse_llm(raw: str) -> str:
-    """Extract clean 1-3 word keyword from any LLM output format."""
-    raw = raw.strip()
-    # quoted text
-    m = re.search(r'["""]([^"""]{1,40})["""]', raw)
-    if m:
-        return m.group(1).strip().lower()
-    # arrow pattern: "instruction → keyword"
-    m = re.search(r'→\s*(.+)$', raw)
-    if m:
-        return m.group(1).strip().lower()[:40]
-    # strip common verbose prefixes
-    raw = re.sub(r'^(keyword[:\s]+|output[:\s]+|the (object|keyword|word) (is|:)\s*)', '', raw, flags=re.I)
-    # first short line
-    for line in raw.split('\n'):
-        line = line.strip().lstrip('-→•*:').strip()
-        line = re.sub(r'[^\w\s\'-]', '', line).strip()
-        if 0 < len(line.split()) <= 4:
-            return line.lower()
-    return raw.split('\n')[0][:40].strip().lower()
-
-# ── YOLOE ─────────────────────────────────────────────────────────────────────
-_yoloe_model = None
-
-def get_yoloe_mask(img_rgb, prompt, H, W):
-    global _yoloe_model
-    import cv2 as _cv2
-    _orig = os.getcwd()
-    if _yoloe_model is None:
-        os.chdir('/workspace/yoloe')
-        _yoloe_model = _YOLOE("yoloe-26l-seg.pt")
-        os.chdir(_orig)
-    if not prompt or len(prompt.strip()) < 1:
-        return None
-    _yoloe_model.set_classes([prompt], _yoloe_model.get_text_pe([prompt]))
-    img_bgr = _cv2.cvtColor(img_rgb, _cv2.COLOR_RGB2BGR)
-    for conf in [0.1, 0.05, 0.03]:
-        results = _yoloe_model.predict(img_bgr, conf=conf, verbose=False)
-        if len(results[0].boxes) > 0 and results[0].masks is not None:
-            mask = results[0].masks.data[0].cpu().numpy()
-            mask = _cv2.resize(mask, (W, H))
-            os.chdir(_orig)
-            return mask > 0.5
-    os.chdir(_orig)
-    return None
-
-from foundationpose.datareader import Ho3dReader
 
 def plot_pipeline_frame(rgb, depth, yoloe_mask, pose_4x4, K, obj_f,
                         frame_idx, instruction, extracted_prompt, save_path):
-    import numpy as np, cv2 as _cv2
     H, W = rgb.shape[:2]
     fig, axes = plt.subplots(1, 4, figsize=(22, 5))
     fig.suptitle(
@@ -161,8 +172,8 @@ def plot_pipeline_frame(rgb, depth, yoloe_mask, pose_4x4, K, obj_f,
 
     overlay = rgb.copy()
     if yoloe_mask is not None:
-        overlay[yoloe_mask] = (overlay[yoloe_mask]*0.4 +
-                               np.array([0,200,0])*0.6).astype('uint8')
+        overlay[yoloe_mask] = (overlay[yoloe_mask] * 0.4 +
+                               np.array([0, 200, 0]) * 0.6).astype('uint8')
     det_str = "detected" if yoloe_mask is not None else "fallback GT"
     axes[2].imshow(overlay)
     axes[2].set_title(f'YOLOE "{extracted_prompt}" ({det_str})')
@@ -170,16 +181,16 @@ def plot_pipeline_frame(rgb, depth, yoloe_mask, pose_4x4, K, obj_f,
 
     pose_img = rgb.copy()
     if pose_4x4 is not None and K is not None:
-        R, t = pose_4x4[:3,:3], pose_4x4[:3,3]
-        rvec, _ = _cv2.Rodrigues(R)
-        pts = np.float32([[0,0,0],[0.05,0,0],[0,0.05,0],[0,0,0.05]])
+        R, t = pose_4x4[:3, :3], pose_4x4[:3, 3]
+        rvec, _ = cv2.Rodrigues(R)
+        pts = np.float32([[0, 0, 0], [0.05, 0, 0], [0, 0.05, 0], [0, 0, 0.05]])
         try:
-            p2d, _ = _cv2.projectPoints(pts, rvec, t.reshape(3,1),
-                                        K.reshape(3,3), np.zeros(5))
-            p2d = p2d.astype(int).reshape(-1,2)
+            p2d, _ = cv2.projectPoints(pts, rvec, t.reshape(3, 1),
+                                       K.reshape(3, 3), np.zeros(5))
+            p2d = p2d.astype(int).reshape(-1, 2)
             o = tuple(p2d[0])
-            for ci,col in enumerate([(255,0,0),(0,255,0),(0,0,255)]):
-                _cv2.arrowedLine(pose_img, o, tuple(p2d[ci+1]), col, 3)
+            for ci, col in enumerate([(255, 0, 0), (0, 255, 0), (0, 0, 255)]):
+                cv2.arrowedLine(pose_img, o, tuple(p2d[ci + 1]), col, 3)
         except Exception:
             pass
     axes[3].imshow(pose_img); axes[3].set_title("Any6D Pose"); axes[3].axis("off")
@@ -190,67 +201,55 @@ def plot_pipeline_frame(rgb, depth, yoloe_mask, pose_4x4, K, obj_f,
                 dpi=80, bbox_inches="tight")
     plt.close()
 
-from estimater import *
-from bop_toolkit_lib.pose_error_custom import mssd, mspd, vsd
-from metrics import *
-from renderer_pyrender import RendererVispy
-from pytorch_lightning import seed_everything
-from datetime import datetime
 
 if __name__ == '__main__':
     seed_everything(0)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--anchor_path",    default="/workspace/anchor_results/dexycb_reference_view_ours")
-    parser.add_argument("--hot3d_data_root",default="/dataset/ho3d/HO3D_data")
-    parser.add_argument("--ycb_model_path", default="/dataset/ho3d")
+    parser.add_argument("--anchor_path",     default="/workspace/anchor_results/dexycb_reference_view_ours")
+    parser.add_argument("--hot3d_data_root", default="/dataset/ho3d/HO3D_data")
+    parser.add_argument("--ycb_model_path",  default="/dataset/ho3d")
     parser.add_argument("--ycbv_modesl_info_path", default="./models_info.json")
-    parser.add_argument("--start_idx",  type=int, default=0)
-    parser.add_argument("--end_idx",    type=int, default=13)
-    parser.add_argument("--running_stride", type=int, default=10)
-    parser.add_argument("--save_dir",   default=None)
-    parser.add_argument("--llm_model",  default="mistral:latest")
+    parser.add_argument("--start_idx",       type=int, default=0)
+    parser.add_argument("--end_idx",         type=int, default=13)
+    parser.add_argument("--running_stride",  type=int, default=10)
+    parser.add_argument("--save_dir",        default=None)
+    parser.add_argument("--llm_model",       default="mistral:latest")
     args = parser.parse_args()
-
-    LLM_MODEL = args.llm_model
 
     save_dir = args.save_dir or f"./results/ho3d_pipeline/{datetime.now():%Y-%m-%d_%H-%M-%S}"
     os.makedirs(save_dir, exist_ok=True)
 
-    obj_folder = ['MPM10','MPM11','MPM12','MPM13','MPM14',
-                  'AP10','AP11','AP12','AP13','AP14',
-                  'SB11','SB13','SM1'][args.start_idx:args.end_idx]
+    obj_folder = ['MPM10', 'MPM11', 'MPM12', 'MPM13', 'MPM14',
+                  'AP10',  'AP11',  'AP12',  'AP13',  'AP14',
+                  'SB11',  'SB13',  'SM1'][args.start_idx:args.end_idx]
 
     object_metrics = {obj: {
-        'ADD':[],'ADD-S':[],'AR':[],'VSD':[],'MSSD':[],'MSPD':[],
-        'R error':[],'T error':[],'cls_id':[],'instance_id':[]
+        'ADD': [], 'ADD-S': [], 'AR': [], 'VSD': [], 'MSSD': [], 'MSPD': [],
+        'R error': [], 'T error': [], 'cls_id': [], 'instance_id': []
     } for obj in obj_folder}
 
-    glctx = dr.RasterizeCudaContext()
-    mesh_tmp = copy.deepcopy(trimesh.primitives.Box(extents=np.ones(3), transform=np.eye(4)))
-    mesh = trimesh.Trimesh(vertices=mesh_tmp.vertices.copy(), faces=mesh_tmp.faces.copy())
+    glctx    = dr.RasterizeCudaContext()
+    mesh_tmp = trimesh.primitives.Box(extents=np.ones(3), transform=np.eye(4))
+    mesh     = trimesh.Trimesh(vertices=mesh_tmp.vertices.copy(),
+                               faces=mesh_tmp.faces.copy())
     est = Any6D(mesh=mesh, scorer=ScorePredictor(), refiner=PoseRefinePredictor(),
                 debug_dir=save_dir, debug=0, glctx=glctx)
-    renderer = RendererVispy(640, 480, mode='depth')
-    obj_count = 0
+    renderer   = RendererVispy(640, 480, mode='depth')
+    obj_count  = 0
 
     for obj_f in tqdm(obj_folder, desc="Objects"):
         instruction = HO3D_INSTRUCTIONS.get(obj_f, "pick me that object")
 
-        # ── LLM: extract keyword ──────────────────────────────────────────────
         print(f"\n[LLM] {obj_f}: \"{instruction}\"")
-        raw_llm    = call_llm(instruction)
-        yoloe_kw   = parse_llm(raw_llm)
-        if not yoloe_kw or len(yoloe_kw.split()) > 5:
-            yoloe_kw = "object"
+        yoloe_kw = _extract_keyword(instruction, args.llm_model)
         print(f"[LLM] → keyword: \"{yoloe_kw}\"")
 
         json.dump({
             'sequence': obj_f, 'instruction': instruction,
-            'llm_raw': raw_llm, 'yoloe_prompt': yoloe_kw, 'llm_model': LLM_MODEL,
-        }, open(f"{save_dir}/{obj_f}_llm_extraction.json",'w'), indent=2)
+            'yoloe_prompt': yoloe_kw, 'llm_model': args.llm_model,
+        }, open(f"{save_dir}/{obj_f}_llm_extraction.json", 'w'), indent=2)
 
-        # ── Data setup ────────────────────────────────────────────────────────
         video_dir = os.path.join(f"{args.hot3d_data_root}/evaluation", obj_f)
         reader = Ho3dReader(video_dir, args.hot3d_data_root)
         reader.color_files = reader.color_files[::args.running_stride]
@@ -258,29 +257,30 @@ if __name__ == '__main__':
 
         with open(args.ycbv_modesl_info_path) as f:
             model_info = json.load(f)
-        trans_disc = [{"R":np.eye(3),"t":np.array([[0,0,0]]).T}]
+        trans_disc = [{"R": np.eye(3), "t": np.array([[0, 0, 0]]).T}]
         if "symmetries_discrete" in model_info[f"{ob_id}"]:
             for sym in model_info[f"{ob_id}"]["symmetries_discrete"]:
-                s4 = np.reshape(sym,(4,4))
-                trans_disc.append({"R":s4[:3,:3],"t":s4[:3,3].reshape(3,1)})
+                s4 = np.reshape(sym, (4, 4))
+                trans_disc.append({"R": s4[:3, :3], "t": s4[:3, 3].reshape(3, 1)})
 
         gt_mesh     = reader.get_gt_mesh(args.ycb_model_path)
         gt_diameter = reader.get_gt_mesh_diamter(args.ycb_model_path)
         mesh        = trimesh.load(reader.get_reference_view_1_mesh(args.anchor_path))
 
         renderer.my_add_object({
-            'pts':     np.asarray(gt_mesh.vertices)*1e3,
+            'pts':     np.asarray(gt_mesh.vertices) * 1e3,
             'normals': np.asarray(gt_mesh.face_normals),
             'faces':   np.asarray(gt_mesh.faces),
         }, ob_id)
 
         pred_pose_a = np.loadtxt(reader.get_reference_view_1_pose(args.anchor_path))
-        gt_pose_a   = np.loadtxt(reader.get_reference_view_1_pose(args.anchor_path).replace('initial','gt'))
+        gt_pose_a   = np.loadtxt(
+            reader.get_reference_view_1_pose(args.anchor_path).replace('initial', 'gt'))
         est.reset_object(mesh=mesh, symmetry_tfs=None)
 
         det_total = det_detected = 0
         det_iou_list = []
-        pose_records = []   # per-frame R, T matrices
+        pose_records = []
 
         for i in tqdm(range(len(reader.color_files)), desc=obj_f, leave=False):
             gt_pose_q = reader.get_gt_pose(i)
@@ -292,33 +292,31 @@ if __name__ == '__main__':
             H, W  = color.shape[:2]
             depth = reader.get_depth(i)
 
-            yoloe_mask  = get_yoloe_mask(color, yoloe_kw, H, W)
             gt_mask_raw = reader.get_mask(i)
+            mask, yoloe_det, _, iou = get_detection_mask(
+                color, yoloe_kw, gt_mask_raw, H, W,
+                conf_fallbacks=(0.05, 0.03), # original tried 3 thresholds: 0.1 → 0.05 → 0.03
+                use_first_det=True,           # original took masks.data[0]
+                bgr_input=True)               # original converted RGB→BGR before YOLOE
 
-            if yoloe_mask is not None:
+            if yoloe_det:
                 det_detected += 1
-                mask = yoloe_mask
-                if gt_mask_raw is not None:
-                    gm = gt_mask_raw.astype(bool)
-                    inter = np.logical_and(yoloe_mask, gm).sum()
-                    union = np.logical_or(yoloe_mask, gm).sum()
-                    if union > 0:
-                        det_iou_list.append(float(inter)/float(union))
-            else:
-                if gt_mask_raw is None:
-                    continue
-                mask = gt_mask_raw.astype(bool)
+                if iou > 0:
+                    det_iou_list.append(iou)
+            elif gt_mask_raw is None:
+                continue
 
             pred_pose_q = est.register(K=reader.K, rgb=color, depth=depth,
                                        ob_mask=mask, iteration=5, name=obj_f)
             if i == 0:
                 plot_pipeline_frame(color, depth,
-                                    yoloe_mask if yoloe_mask is not None else mask,
+                                    mask if yoloe_det else gt_mask_raw,
                                     pred_pose_q, reader.K, obj_f, i,
                                     instruction, yoloe_kw, save_dir)
 
-            pose_aq = pred_pose_q @ np.linalg.inv(pred_pose_a)
-            pred_q  = pose_aq @ gt_pose_a
+            # Anchor-relative correction (same formula as original)
+            pred_q = (pred_pose_q @ np.linalg.inv(pred_pose_a)) @ gt_pose_a
+
             err_R, err_T = compute_RT_distances(pred_q, gt_pose_q)
             add  = compute_add(gt_mesh.vertices, pred_q, gt_pose_q)
             adds = compute_adds(gt_mesh.vertices, pred_q, gt_pose_q)
@@ -327,10 +325,10 @@ if __name__ == '__main__':
 
             pred_q16 = pred_q.astype(np.float16)
             gt_q16   = gt_pose_q.astype(np.float16)
-            pr_r = pred_q16[:3,:3]
-            pr_t = np.expand_dims(pred_q16[:3,3], axis=1) * 1e3
-            gt_r = gt_q16[:3,:3]
-            gt_t = np.expand_dims(gt_q16[:3,3],  axis=1) * 1e3
+            pr_r = pred_q16[:3, :3]
+            pr_t = np.expand_dims(pred_q16[:3, 3], axis=1) * 1e3
+            gt_r = gt_q16[:3, :3]
+            gt_t = np.expand_dims(gt_q16[:3, 3], axis=1) * 1e3
 
             mssd_err = mssd(pose_est=pred_q, pose_gt=gt_pose_q,
                             pts=gt_mesh.vertices, syms=trans_disc) * 1e3
@@ -342,26 +340,24 @@ if __name__ == '__main__':
             vsd_taus = [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5]
             vsd_rec  = np.array([0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5])
 
-            vsd_errs = vsd(pr_r, pr_t, gt_r, gt_t, depth*1e3,
-                           reader.K.reshape(3,3), 15.0, vsd_taus, True,
-                           gt_diameter*1e3, renderer, ob_id)
-            vsd_errs = np.asarray(vsd_errs)
-            all_vsd_recs = np.stack([vsd_errs < r for r in vsd_rec], axis=1)
-            mean_vsd  = all_vsd_recs.mean()
-            mean_mssd = (mssd_err < mssd_rec * gt_diameter * 1e3).mean()
-            mean_mspd = (mspd_err < mspd_rec).mean()
-            mean_ar   = (mean_mssd + mean_mspd + mean_vsd) / 3.
+            vsd_errs = vsd(pr_r, pr_t, gt_r, gt_t, depth * 1e3,
+                           reader.K.reshape(3, 3), 15.0, vsd_taus, True,
+                           gt_diameter * 1e3, renderer, ob_id)
+            vsd_errs   = np.asarray(vsd_errs)
+            mean_vsd   = np.stack([vsd_errs < r for r in vsd_rec], axis=1).mean()
+            mean_mssd  = (mssd_err < mssd_rec * gt_diameter * 1e3).mean()
+            mean_mspd  = (mspd_err < mspd_rec).mean()
+            mean_ar    = (mean_mssd + mean_mspd + mean_vsd) / 3.
 
-            # save pose matrices
             pose_records.append({
                 'frame': i,
-                'yoloe_detected': yoloe_mask is not None,
-                'R_pred': pred_q[:3,:3].tolist(),
-                'T_pred': pred_q[:3,3].tolist(),
-                'R_gt':   gt_pose_q[:3,:3].tolist(),
-                'T_gt':   gt_pose_q[:3,3].tolist(),
-                'R_error': float(err_R.tolist()[0]) if hasattr(err_R,'tolist') else float(err_R),
-                'T_error': float(err_T.tolist()[0]) if hasattr(err_T,'tolist') else float(err_T),
+                'yoloe_detected': yoloe_det,
+                'R_pred': pred_q[:3, :3].tolist(),
+                'T_pred': pred_q[:3, 3].tolist(),
+                'R_gt':   gt_pose_q[:3, :3].tolist(),
+                'T_gt':   gt_pose_q[:3, 3].tolist(),
+                'R_error': float(err_R.tolist()[0]) if hasattr(err_R, 'tolist') else float(err_R),
+                'T_error': float(err_T.tolist()[0]) if hasattr(err_T, 'tolist') else float(err_T),
             })
 
             object_metrics[obj_f]['ADD'].append(add_thres)
@@ -387,11 +383,10 @@ if __name__ == '__main__':
                 pass
             obj_count += 1
 
-        # ── Save per-object ───────────────────────────────────────────────────
-        means = {k: round(float(np.mean(object_metrics[obj_f][k]))*100, 1)
-                 for k in ['ADD','ADD-S','AR','VSD','MSSD','MSPD']}
-        means['R_error'] = round(float(np.mean(object_metrics[obj_f]['R error'])),2)
-        means['T_error'] = round(float(np.mean(object_metrics[obj_f]['T error'])),2)
+        means = {k: round(float(np.mean(object_metrics[obj_f][k])) * 100, 1)
+                 for k in ['ADD', 'ADD-S', 'AR', 'VSD', 'MSSD', 'MSPD']}
+        means['R_error'] = round(float(np.mean(object_metrics[obj_f]['R error'])), 2)
+        means['T_error'] = round(float(np.mean(object_metrics[obj_f]['T error'])), 2)
 
         df_obj = pd.DataFrame({
             'Frame_ID': object_metrics[obj_f]['instance_id'],
@@ -406,28 +401,28 @@ if __name__ == '__main__':
             'T_error':  object_metrics[obj_f]['T error'],
         })
         df_obj = pd.concat([df_obj, pd.DataFrame([{
-            'Frame_ID':'MEAN','Class':obj_f,
-            **{k: f"{means[k]:.1f}" for k in ['ADD-S','ADD','AR','MSSD','MSPD','VSD','R_error','T_error']}
+            'Frame_ID': 'MEAN', 'Class': obj_f,
+            **{k: f"{means[k]:.1f}" for k in
+               ['ADD-S', 'ADD', 'AR', 'MSSD', 'MSPD', 'VSD', 'R_error', 'T_error']}
         }])], ignore_index=True)
         df_obj.to_excel(f"{save_dir}/{obj_f}_metrics_results.xlsx", index=False)
 
-        # save per-frame pose matrices
         json.dump({
             'sequence': obj_f, 'instruction': instruction,
-            'yoloe_prompt': yoloe_kw, 'llm_model': LLM_MODEL,
+            'yoloe_prompt': yoloe_kw, 'llm_model': args.llm_model,
             'frames': pose_records,
-        }, open(f"{save_dir}/{obj_f}_poses.json",'w'), indent=2)
+        }, open(f"{save_dir}/{obj_f}_poses.json", 'w'), indent=2)
 
-        det_rate = round(det_detected/det_total*100,1) if det_total>0 else 0.0
-        mean_iou = round(float(np.mean(det_iou_list))*100,1) if det_iou_list else 0.0
+        det_rate = round(det_detected / det_total * 100, 1) if det_total > 0 else 0.0
+        mean_iou = round(float(np.mean(det_iou_list)) * 100, 1) if det_iou_list else 0.0
         json.dump({
             'sequence': obj_f, 'instruction': instruction,
-            'yoloe_prompt': yoloe_kw, 'llm_model': LLM_MODEL,
+            'yoloe_prompt': yoloe_kw, 'llm_model': args.llm_model,
             'total_frames': det_total, 'detected_frames': det_detected,
             'detection_rate': det_rate, 'mean_iou': mean_iou,
             'fallback_frames': det_total - det_detected,
             **means,
-        }, open(f"{save_dir}/{obj_f}_yoloe_detection.json",'w'), indent=2)
+        }, open(f"{save_dir}/{obj_f}_yoloe_detection.json", 'w'), indent=2)
 
         print(f"[{obj_f}] AR={means['AR']} ADD-S={means['ADD-S']} "
               f"Det={det_rate}% IoU={mean_iou}% kw=\"{yoloe_kw}\"")
