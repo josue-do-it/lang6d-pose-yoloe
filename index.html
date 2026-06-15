@@ -3,490 +3,248 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Lang6D Pose — LLM + YOLOE + Any6D</title>
+<title>PoseLingua6D — LLM + YOLOE + Any6D</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
-/* ── Reset ─────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#ffffff;
-  --bg2:#f7f7f7;
-  --bg3:#f0f0f0;
-  --ink:#111111;
-  --ink2:#444444;
-  --ink3:#888888;
-  --border:#e0e0e0;
-  --accent:#111111;
-  --code-bg:#0d1117;
-  --code-txt:#79c0ff;
+  --bg:#ffffff;--bg2:#f7f7f7;--bg3:#f0f0f0;
+  --ink:#111111;--ink2:#444444;--ink3:#888888;
+  --border:#e0e0e0;--code-bg:#0d1117;--code-txt:#79c0ff;
   --radius:12px;
   --shadow:0 4px 24px rgba(0,0,0,.07);
   --shadow-hover:0 8px 40px rgba(0,0,0,.13);
   --transition:.35s cubic-bezier(.4,0,.2,1);
 }
 html{scroll-behavior:smooth;font-size:16px}
-body{
-  font-family:'Inter',sans-serif;
-  background:var(--bg);
-  color:var(--ink);
-  line-height:1.65;
-  overflow-x:hidden;
-}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);line-height:1.65;overflow-x:hidden}
 a{color:inherit;text-decoration:none}
-img{max-width:100%}
-
-/* ── Scrollbar ─────────────────────────────────────── */
+img{max-width:100%;display:block}
 ::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-track{background:#f0f0f0}
 ::-webkit-scrollbar-thumb{background:#ccc;border-radius:3px}
 
-/* ── Nav ───────────────────────────────────────────── */
+/* ── Nav ── */
 nav{
   position:fixed;top:0;left:0;right:0;z-index:100;
   display:flex;align-items:center;justify-content:space-between;
   padding:0 5%;height:64px;
-  background:rgba(255,255,255,.92);
-  backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--border);
-  transition:var(--transition);
+  background:rgba(255,255,255,.92);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);transition:var(--transition);
 }
-.nav-logo{
-  font-weight:700;font-size:1.05rem;letter-spacing:-.5px;
-  display:flex;align-items:center;gap:10px;
-}
-.nav-logo span{
-  width:32px;height:32px;border-radius:8px;
-  background:var(--ink);display:flex;align-items:center;justify-content:center;
-}
-.nav-logo span svg{fill:#fff}
+.nav-logo{font-weight:700;font-size:1.05rem;letter-spacing:-.5px;display:flex;align-items:center;gap:10px}
+.nav-logo img{width:32px;height:32px;border-radius:8px;object-fit:cover}
 .nav-links{display:flex;align-items:center;gap:8px}
-.nav-links a{
-  padding:7px 16px;border-radius:8px;
-  font-size:.875rem;font-weight:500;color:var(--ink2);
-  transition:var(--transition);
-}
+.nav-links a{padding:7px 16px;border-radius:8px;font-size:.875rem;font-weight:500;color:var(--ink2);transition:var(--transition)}
 .nav-links a:hover{background:var(--bg3);color:var(--ink)}
-.btn-docs{
-  background:var(--ink)!important;color:#fff!important;
-  border-radius:8px!important;
-}
-.btn-docs:hover{background:#333!important;color:#fff!important}
+.btn-docs{background:var(--ink)!important;color:#fff!important;border-radius:8px!important}
+.btn-docs:hover{background:#333!important}
 
-/* ── Hero ──────────────────────────────────────────── */
-#hero{
-  min-height:100vh;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;padding:120px 5% 80px;
-  position:relative;overflow:hidden;
-}
-.hero-bg{
-  position:absolute;inset:0;z-index:0;
-  background:radial-gradient(ellipse 80% 60% at 50% 0%,#f0f0f0 0%,transparent 70%);
-  pointer-events:none;
-}
-.hero-grid{
-  position:absolute;inset:0;z-index:0;
-  background-image:
-    linear-gradient(var(--border) 1px,transparent 1px),
-    linear-gradient(90deg,var(--border) 1px,transparent 1px);
-  background-size:60px 60px;
-  mask-image:radial-gradient(ellipse 80% 80% at 50% 0%,black,transparent);
-  opacity:.5;
-  pointer-events:none;
-}
-.hero-content{position:relative;z-index:1;max-width:820px}
-.hero-tag{
-  display:inline-flex;align-items:center;gap:8px;
-  background:var(--bg3);border:1px solid var(--border);
-  border-radius:100px;padding:5px 14px;
-  font-size:.78rem;font-weight:600;letter-spacing:.5px;
-  text-transform:uppercase;color:var(--ink2);
-  margin-bottom:28px;
-  animation:fadeUp .6s ease both;
-}
-.hero-tag::before{
-  content:'';width:7px;height:7px;border-radius:50%;
-  background:var(--ink);animation:pulse 2s ease infinite;
-}
+/* ── Hero ── */
+#hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 5% 80px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,#f0f0f0 0%,transparent 70%);pointer-events:none}
+.hero-grid{position:absolute;inset:0;z-index:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 80% at 50% 0%,black,transparent);opacity:.45;pointer-events:none}
+.hero-content{position:relative;z-index:1;max-width:840px}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);border-radius:100px;padding:5px 14px;font-size:.78rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--ink2);margin-bottom:28px;animation:fadeUp .6s ease both}
+.hero-tag::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--ink);animation:pulse 2s ease infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-h1{
-  font-size:clamp(2rem,5vw,3.5rem);font-weight:700;
-  letter-spacing:-1.5px;line-height:1.15;
-  margin-bottom:22px;
-  animation:fadeUp .7s .1s ease both;
-}
+h1{font-size:clamp(2rem,5vw,3.5rem);font-weight:700;letter-spacing:-1.5px;line-height:1.15;margin-bottom:22px;animation:fadeUp .7s .1s ease both}
 h1 em{font-style:normal;color:var(--ink3)}
-.hero-sub{
-  font-size:1.1rem;color:var(--ink2);max-width:600px;margin:0 auto 36px;
-  animation:fadeUp .7s .2s ease both;
-}
-.hero-badges{
-  display:flex;flex-wrap:wrap;justify-content:center;gap:8px;
-  margin-bottom:40px;
-  animation:fadeUp .7s .3s ease both;
-}
-.badge{
-  font-family:'JetBrains Mono',monospace;font-size:.72rem;
-  background:var(--bg3);border:1px solid var(--border);
-  border-radius:6px;padding:4px 10px;color:var(--ink2);
-}
-.hero-btns{
-  display:flex;gap:12px;justify-content:center;flex-wrap:wrap;
-  margin-bottom:56px;
-  animation:fadeUp .7s .4s ease both;
-}
-.btn{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:11px 24px;border-radius:10px;font-weight:600;font-size:.9rem;
-  transition:var(--transition);cursor:pointer;border:none;
-}
+.hero-sub{font-size:1.1rem;color:var(--ink2);max-width:620px;margin:0 auto 36px;animation:fadeUp .7s .2s ease both}
+.hero-badges{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:40px;animation:fadeUp .7s .3s ease both}
+.badge{font-family:'JetBrains Mono',monospace;font-size:.72rem;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:4px 10px;color:var(--ink2)}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:56px;animation:fadeUp .7s .4s ease both}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 24px;border-radius:10px;font-weight:600;font-size:.9rem;transition:var(--transition);cursor:pointer;border:none}
 .btn-primary{background:var(--ink);color:#fff}
 .btn-primary:hover{background:#333;transform:translateY(-1px);box-shadow:var(--shadow-hover)}
 .btn-secondary{background:var(--bg);color:var(--ink);border:1.5px solid var(--border)}
 .btn-secondary:hover{background:var(--bg3);transform:translateY(-1px)}
-.hero-terminal{
-  background:var(--code-bg);border-radius:var(--radius);
-  padding:20px 24px;text-align:left;
-  font-family:'JetBrains Mono',monospace;font-size:.82rem;
-  color:var(--code-txt);line-height:1.8;
-  border:1px solid rgba(255,255,255,.08);
-  box-shadow:0 24px 60px rgba(0,0,0,.2);
-  animation:fadeUp .7s .5s ease both;
-  position:relative;overflow:hidden;
-}
-.hero-terminal::before{
-  content:'';position:absolute;top:0;left:0;right:0;
-  height:36px;background:rgba(255,255,255,.05);
-  display:flex;align-items:center;padding:0 14px;
-}
-.terminal-dots{
-  position:absolute;top:12px;left:16px;
-  display:flex;gap:6px;
-}
-.terminal-dots span{
-  width:12px;height:12px;border-radius:50%;display:block;
-}
+.hero-terminal{background:var(--code-bg);border-radius:var(--radius);padding:20px 24px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--code-txt);line-height:1.8;border:1px solid rgba(255,255,255,.08);box-shadow:0 24px 60px rgba(0,0,0,.2);animation:fadeUp .7s .5s ease both;position:relative}
+.terminal-dots{position:absolute;top:12px;left:16px;display:flex;gap:6px}
+.terminal-dots span{width:12px;height:12px;border-radius:50%;display:block}
 .d1{background:#ff5f56}.d2{background:#ffbd2e}.d3{background:#27c93f}
 .terminal-body{margin-top:28px}
-.c-green{color:#27c93f}.c-blue{color:#79c0ff}.c-gray{color:#666}.c-yellow{color:#e3b341}
+.c-green{color:#27c93f}.c-blue{color:#79c0ff}.c-gray{color:#555}.c-yellow{color:#e3b341}
 
-/* ── Sections ──────────────────────────────────────── */
+/* ── Sections ── */
 section{padding:100px 5%}
-.section-label{
-  font-size:.75rem;font-weight:700;letter-spacing:2px;
-  text-transform:uppercase;color:var(--ink3);
-  margin-bottom:14px;
-}
-.section-title{
-  font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:700;
-  letter-spacing:-.8px;margin-bottom:16px;
-}
-.section-sub{
-  font-size:1rem;color:var(--ink2);max-width:580px;margin-bottom:60px;
-}
+.section-label{font-size:.75rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink3);margin-bottom:14px}
+.section-title{font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:700;letter-spacing:-.8px;margin-bottom:16px}
+.section-sub{font-size:1rem;color:var(--ink2);max-width:580px;margin-bottom:60px}
 
-/* ── Architecture ──────────────────────────────────── */
+/* ── Architecture ── */
 #architecture{background:var(--bg)}
-.arch-flow{
-  display:flex;align-items:center;justify-content:center;
-  flex-wrap:wrap;gap:0;margin-top:60px;
-}
-.arch-step{
-  background:var(--bg);border:1.5px solid var(--border);
-  border-radius:var(--radius);padding:28px 24px;
-  width:200px;text-align:center;
-  box-shadow:var(--shadow);
-  transition:var(--transition);
-  opacity:0;transform:translateY(20px);
-}
+.arch-flow{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0;margin-bottom:56px}
+.arch-step{background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius);padding:28px 24px;width:190px;text-align:center;box-shadow:var(--shadow);transition:var(--transition);opacity:0;transform:translateY(20px)}
 .arch-step.visible{opacity:1;transform:translateY(0)}
 .arch-step:hover{box-shadow:var(--shadow-hover);transform:translateY(-3px)}
-.arch-icon{
-  width:48px;height:48px;border-radius:12px;
-  background:var(--ink);display:flex;align-items:center;justify-content:center;
-  margin:0 auto 14px;font-size:1.3rem;
-}
+.arch-icon{width:48px;height:48px;border-radius:12px;background:var(--ink);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:1.3rem}
 .arch-step h3{font-size:.9rem;font-weight:700;margin-bottom:6px}
 .arch-step p{font-size:.78rem;color:var(--ink2);line-height:1.5}
-.arch-step .arch-badge{
-  display:inline-block;background:var(--bg3);border:1px solid var(--border);
-  border-radius:5px;padding:2px 8px;font-size:.68rem;
-  font-family:'JetBrains Mono',monospace;color:var(--ink3);margin-top:10px;
-}
-.arch-arrow{
-  display:flex;flex-direction:column;align-items:center;
-  padding:0 8px;color:var(--ink3);
-  opacity:0;transition:var(--transition);
-}
+.arch-step .arch-badge{display:inline-block;background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:2px 8px;font-size:.68rem;font-family:'JetBrains Mono',monospace;color:var(--ink3);margin-top:10px}
+.arch-arrow{display:flex;align-items:center;padding:0 6px;opacity:0;transition:var(--transition)}
 .arch-arrow.visible{opacity:1}
-.arch-arrow-line{
-  width:48px;height:2px;background:var(--border);
-  position:relative;overflow:hidden;
-}
-.arch-arrow-line::after{
-  content:'';position:absolute;left:-100%;top:0;
-  width:100%;height:100%;
-  background:linear-gradient(90deg,transparent,var(--ink3),transparent);
-  animation:flowRight 2s ease-in-out infinite;
-}
+.arch-arrow-line{width:40px;height:2px;background:var(--border);position:relative;overflow:hidden}
+.arch-arrow-line::after{content:'';position:absolute;left:-100%;top:0;width:100%;height:100%;background:linear-gradient(90deg,transparent,var(--ink3),transparent);animation:flowRight 2s ease-in-out infinite}
 @keyframes flowRight{0%{left:-100%}100%{left:100%}}
-.arch-arrow svg{color:var(--ink3)}
-.arch-output{
-  margin-top:48px;
-  background:var(--code-bg);border-radius:var(--radius);
-  padding:20px 28px;
-  font-family:'JetBrains Mono',monospace;font-size:.82rem;
-  color:var(--code-txt);
-  border:1px solid rgba(255,255,255,.08);
-  text-align:left;max-width:700px;margin-left:auto;margin-right:auto;
-  opacity:0;transform:translateY(20px);
-  transition:var(--transition);
-}
+
+/* Pipeline image */
+.pipeline-img-wrap{margin-top:16px;border-radius:var(--radius);overflow:hidden;border:1.5px solid var(--border);box-shadow:var(--shadow);opacity:0;transform:translateY(20px);transition:var(--transition)}
+.pipeline-img-wrap.visible{opacity:1;transform:translateY(0)}
+.pipeline-img-wrap img{width:100%;object-fit:contain;max-height:420px;background:#fafafa}
+
+.arch-output{margin-top:40px;background:var(--code-bg);border-radius:var(--radius);padding:20px 28px;font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--code-txt);border:1px solid rgba(255,255,255,.08);text-align:left;max-width:720px;margin-left:auto;margin-right:auto;opacity:0;transform:translateY(20px);transition:var(--transition)}
 .arch-output.visible{opacity:1;transform:translateY(0)}
 
-/* ── Results ───────────────────────────────────────── */
+/* ── Results ── */
 #results{background:var(--bg2)}
-.results-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:20px;margin-bottom:60px;
-}
-.result-card{
-  background:var(--bg);border:1.5px solid var(--border);
-  border-radius:var(--radius);padding:28px 24px;
-  box-shadow:var(--shadow);
-  transition:var(--transition);
-  opacity:0;transform:translateY(20px);
-}
+.results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:20px;margin-bottom:60px}
+.result-card{background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius);padding:28px 24px;box-shadow:var(--shadow);transition:var(--transition);opacity:0;transform:translateY(20px)}
 .result-card.visible{opacity:1;transform:translateY(0)}
 .result-card:hover{box-shadow:var(--shadow-hover);transform:translateY(-2px)}
-.result-num{
-  font-size:2.4rem;font-weight:700;letter-spacing:-1px;
-  margin-bottom:4px;line-height:1;
-}
+.result-num{font-size:2.4rem;font-weight:700;letter-spacing:-1px;margin-bottom:4px;line-height:1}
 .result-label{font-size:.8rem;color:var(--ink2);font-weight:500;margin-bottom:8px}
-.result-dataset{
-  font-size:.72rem;font-family:'JetBrains Mono',monospace;
-  color:var(--ink3);background:var(--bg3);
-  border:1px solid var(--border);border-radius:5px;
-  display:inline-block;padding:2px 8px;
-}
+.result-dataset{font-size:.72rem;font-family:'JetBrains Mono',monospace;color:var(--ink3);background:var(--bg3);border:1px solid var(--border);border-radius:5px;display:inline-block;padding:2px 8px}
 .results-table-wrap{overflow-x:auto}
-table{
-  width:100%;border-collapse:collapse;
-  font-size:.875rem;
-}
+table{width:100%;border-collapse:collapse;font-size:.875rem}
 thead tr{border-bottom:2px solid var(--border)}
-th{
-  text-align:left;padding:10px 14px;
-  font-size:.75rem;font-weight:700;letter-spacing:.5px;
-  text-transform:uppercase;color:var(--ink3);
-}
+th{text-align:left;padding:10px 14px;font-size:.75rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--ink3)}
 td{padding:10px 14px;border-bottom:1px solid var(--border)}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:var(--bg3)}
-.tag{
-  display:inline-block;padding:2px 8px;border-radius:5px;
-  font-family:'JetBrains Mono',monospace;font-size:.72rem;
-}
-.tag-green{background:#d4edda;color:#155724}
-.tag-orange{background:#fff3cd;color:#856404}
-.tag-blue{background:#cce5ff;color:#004085}
+.tag{display:inline-block;padding:2px 8px;border-radius:5px;font-family:'JetBrains Mono',monospace;font-size:.72rem}
+.tag-green{background:#d4edda;color:#155724}.tag-orange{background:#fff3cd;color:#856404}.tag-blue{background:#cce5ff;color:#004085}
 
-/* ── Demo ──────────────────────────────────────────── */
+/* ── Demo ── */
 #demo{background:var(--bg)}
-.demo-grid{
-  display:grid;grid-template-columns:1fr 1fr;
-  gap:40px;align-items:center;
-}
+.demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
 @media(max-width:768px){.demo-grid{grid-template-columns:1fr}}
-.demo-img-wrap{
-  border-radius:var(--radius);overflow:hidden;
-  border:1.5px solid var(--border);box-shadow:var(--shadow);
-}
+.demo-img-wrap{border-radius:var(--radius);overflow:hidden;border:1.5px solid var(--border);box-shadow:var(--shadow)}
 .demo-steps{display:flex;flex-direction:column;gap:20px}
-.demo-step{
-  display:flex;gap:16px;align-items:flex-start;
-  opacity:0;transform:translateX(-20px);
-  transition:var(--transition);
-}
+.demo-step{display:flex;gap:16px;align-items:flex-start;opacity:0;transform:translateX(-20px);transition:var(--transition)}
 .demo-step.visible{opacity:1;transform:translateX(0)}
-.demo-step-num{
-  width:36px;height:36px;border-radius:50%;
-  background:var(--ink);color:#fff;
-  display:flex;align-items:center;justify-content:center;
-  font-weight:700;font-size:.85rem;flex-shrink:0;margin-top:2px;
-}
+.demo-step-num{width:36px;height:36px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex-shrink:0;margin-top:2px}
 .demo-step-body h4{font-size:.95rem;font-weight:600;margin-bottom:4px}
 .demo-step-body p{font-size:.85rem;color:var(--ink2)}
-code{
-  font-family:'JetBrains Mono',monospace;font-size:.82em;
-  background:var(--bg3);border:1px solid var(--border);
-  border-radius:4px;padding:1px 6px;
-}
+code{font-family:'JetBrains Mono',monospace;font-size:.82em;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:1px 6px}
 
-/* ── Docs Modal ────────────────────────────────────── */
-#docs-overlay{
-  position:fixed;inset:0;z-index:200;
-  background:rgba(0,0,0,.5);backdrop-filter:blur(4px);
-  opacity:0;pointer-events:none;transition:opacity .3s ease;
-}
+/* ── Docs Modal ── */
+#docs-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .3s ease}
 #docs-overlay.open{opacity:1;pointer-events:all}
 #docs-modal{
   position:fixed;top:0;right:0;bottom:0;z-index:201;
-  width:min(90vw,1000px);
-  background:var(--bg);
+  width:min(92vw,1040px);background:var(--bg);
   box-shadow:-8px 0 60px rgba(0,0,0,.15);
   display:flex;flex-direction:column;
   transform:translateX(100%);transition:transform .4s cubic-bezier(.4,0,.2,1);
   overflow:hidden;
 }
 #docs-modal.open{transform:translateX(0)}
-.docs-header{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:20px 28px;border-bottom:1px solid var(--border);
-  flex-shrink:0;
-}
-.docs-header h2{font-size:1.1rem;font-weight:700}
-.docs-close{
-  width:36px;height:36px;border-radius:8px;
-  border:1.5px solid var(--border);background:none;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  transition:var(--transition);font-size:1.2rem;color:var(--ink2);
-}
+.docs-header{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;border-bottom:1px solid var(--border);flex-shrink:0}
+.docs-header h2{font-size:1rem;font-weight:700;display:flex;align-items:center;gap:10px}
+.docs-close{width:36px;height:36px;border-radius:8px;border:1.5px solid var(--border);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--transition);font-size:1.1rem;color:var(--ink2)}
 .docs-close:hover{background:var(--bg3)}
-.docs-body{display:flex;flex:1;overflow:hidden}
-.docs-nav{
-  width:220px;flex-shrink:0;
-  border-right:1px solid var(--border);
-  overflow-y:auto;padding:20px 0;
+
+/* Horizontal tab nav */
+.docs-tabs{
+  display:flex;overflow-x:auto;flex-shrink:0;
+  border-bottom:1px solid var(--border);
+  padding:0 20px;gap:2px;
+  scrollbar-width:none;
 }
-.docs-nav a{
-  display:block;padding:7px 20px;
-  font-size:.82rem;color:var(--ink2);
-  border-left:2px solid transparent;
-  transition:var(--transition);
+.docs-tabs::-webkit-scrollbar{display:none}
+.docs-tabs a{
+  display:flex;align-items:center;gap:6px;
+  padding:10px 14px;white-space:nowrap;
+  font-size:.8rem;font-weight:500;color:var(--ink3);
+  border-bottom:2px solid transparent;margin-bottom:-1px;
+  transition:var(--transition);cursor:pointer;
 }
-.docs-nav a:hover,.docs-nav a.active{
-  color:var(--ink);background:var(--bg2);
-  border-left-color:var(--ink);
-}
-.docs-content{
-  flex:1;overflow-y:auto;
-  padding:36px 40px;
-}
-.docs-content h2{
-  font-size:1.6rem;font-weight:700;letter-spacing:-.5px;
-  margin:0 0 8px;padding-top:12px;
-}
-.docs-content h3{font-size:1.15rem;font-weight:700;margin:28px 0 10px}
-.docs-content h4{font-size:.95rem;font-weight:700;margin:20px 0 8px;color:var(--ink2)}
-.docs-content p{font-size:.9rem;color:var(--ink2);margin-bottom:14px;line-height:1.7}
-.docs-content ul,.docs-content ol{
-  padding-left:20px;font-size:.9rem;color:var(--ink2);margin-bottom:14px;
-}
-.docs-content li{margin-bottom:6px;line-height:1.7}
+.docs-tabs a:hover{color:var(--ink);background:var(--bg2)}
+.docs-tabs a.active{color:var(--ink);border-bottom-color:var(--ink)}
+.docs-tabs a .tab-num{font-size:.68rem;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:1px 5px;font-family:'JetBrains Mono',monospace}
+
+/* Content */
+.docs-content{flex:1;overflow-y:auto;padding:36px 44px}
+.docs-content h2{font-size:1.5rem;font-weight:700;letter-spacing:-.5px;margin:0 0 10px;padding-top:8px}
+.docs-content h3{font-size:1.05rem;font-weight:700;margin:28px 0 10px;color:var(--ink)}
+.docs-content h4{font-size:.9rem;font-weight:700;margin:18px 0 8px;color:var(--ink2)}
+.docs-content p{font-size:.88rem;color:var(--ink2);margin-bottom:14px;line-height:1.75}
+.docs-content ul,.docs-content ol{padding-left:20px;font-size:.88rem;color:var(--ink2);margin-bottom:14px}
+.docs-content li{margin-bottom:6px;line-height:1.75}
 .docs-section{padding:40px 0;border-bottom:1px solid var(--border)}
 .docs-section:last-child{border-bottom:none}
 .docs-pre{
   background:var(--code-bg);border-radius:10px;
   padding:18px 20px;
-  font-family:'JetBrains Mono',monospace;font-size:.8rem;
+  font-family:'JetBrains Mono',monospace;font-size:.79rem;
   color:var(--code-txt);line-height:1.8;
-  overflow-x:auto;margin:14px 0;
-  position:relative;border:1px solid rgba(255,255,255,.06);
+  overflow-x:auto;
+  white-space:pre;
+  margin:14px 0;
+  position:relative;
+  border:1px solid rgba(255,255,255,.06);
 }
-.copy-btn{
-  position:absolute;top:10px;right:10px;
-  background:rgba(255,255,255,.1);border:none;
-  border-radius:6px;padding:4px 10px;
-  color:#888;font-size:.72rem;font-family:'JetBrains Mono',monospace;
-  cursor:pointer;transition:var(--transition);
-}
+.copy-btn{position:absolute;top:10px;right:10px;background:rgba(255,255,255,.1);border:none;border-radius:6px;padding:4px 10px;color:#888;font-size:.72rem;font-family:'JetBrains Mono',monospace;cursor:pointer;transition:var(--transition)}
 .copy-btn:hover{background:rgba(255,255,255,.2);color:#fff}
 .docs-table-wrap{overflow-x:auto;margin:14px 0}
 .docs-table{width:100%;border-collapse:collapse;font-size:.82rem}
-.docs-table th{
-  text-align:left;padding:8px 12px;
-  background:var(--bg2);border:1px solid var(--border);
-  font-weight:700;font-size:.75rem;letter-spacing:.3px;color:var(--ink2);
-}
-.docs-table td{
-  padding:8px 12px;border:1px solid var(--border);
-  color:var(--ink2);vertical-align:top;
-}
+.docs-table th{text-align:left;padding:8px 12px;background:var(--bg2);border:1px solid var(--border);font-weight:700;font-size:.73rem;letter-spacing:.3px;color:var(--ink2)}
+.docs-table td{padding:8px 12px;border:1px solid var(--border);color:var(--ink2);vertical-align:top}
 .docs-table tr:hover td{background:var(--bg3)}
-.callout{
-  background:var(--bg2);border-left:3px solid var(--ink);
-  border-radius:0 8px 8px 0;padding:14px 18px;
-  font-size:.87rem;color:var(--ink2);margin:16px 0;
-}
+.callout{background:var(--bg2);border-left:3px solid var(--ink);border-radius:0 8px 8px 0;padding:14px 18px;font-size:.87rem;color:var(--ink2);margin:16px 0}
 .callout strong{color:var(--ink)}
 
-/* ── Footer ────────────────────────────────────────── */
-footer{
-  border-top:1px solid var(--border);
-  padding:40px 5%;
-  display:flex;align-items:center;justify-content:space-between;
-  flex-wrap:wrap;gap:16px;
-}
+/* ── Footer ── */
+footer{border-top:1px solid var(--border);padding:40px 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
 .footer-left{font-size:.85rem;color:var(--ink3)}
 .footer-right{display:flex;gap:16px}
 .footer-right a{font-size:.85rem;color:var(--ink3);transition:var(--transition)}
 .footer-right a:hover{color:var(--ink)}
 
-/* ── Animations ────────────────────────────────────── */
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(24px)}
-  to{opacity:1;transform:translateY(0)}
-}
+/* ── Animations ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 .fade-up{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
 .fade-up.visible{opacity:1;transform:translateY(0)}
 
-/* ── Responsive ────────────────────────────────────── */
 @media(max-width:768px){
   nav{padding:0 4%}
   .nav-links a:not(.btn-docs){display:none}
   .arch-flow{flex-direction:column}
   .arch-arrow{transform:rotate(90deg);padding:8px 0}
-  .arch-arrow-line{width:2px;height:40px}
-  @keyframes flowRight{0%{top:-100%;left:0}100%{top:100%;left:0}}
-  .docs-nav{display:none}
-  .docs-content{padding:24px 20px}
+  .docs-content{padding:24px 18px}
 }
 </style>
 </head>
 <body>
 
-<!-- ── NAV ─────────────────────────────────────────── -->
+<!-- NAV -->
 <nav>
   <div class="nav-logo">
-    <span>
-      <svg width="16" height="16" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-    </span>
-    Lang6D Pose
+    <img src="assets/logo.png" alt="PoseLingua6D logo"/>
+    PoseLingua6D
   </div>
   <div class="nav-links">
     <a href="#architecture">Architecture</a>
     <a href="#results">Results</a>
-    <a href="#demo">Demo</a>
+    <a href="#demo">Quick Start</a>
     <a href="https://github.com/josue-do-it/lang6d-pose-yoloe" target="_blank">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
       GitHub
     </a>
     <a href="#" class="btn-docs" onclick="openDocs(event)">Docs</a>
   </div>
 </nav>
 
-<!-- ── HERO ─────────────────────────────────────────── -->
+<!-- HERO -->
 <section id="hero">
   <div class="hero-bg"></div>
   <div class="hero-grid"></div>
   <div class="hero-content">
-    <div class="hero-tag">CVPR 2025 · Research Project</div>
-    <h1>Open-Vocabulary 6D Pose<br/><em>via LLM + YOLOE + Any6D</em></h1>
+    <div class="hero-tag">Research Project · 2025</div>
+    <h1>PoseLingua6D<br/><em>LLM + YOLOE + Any6D</em></h1>
     <p class="hero-sub">
       Say <strong>"hand me the mustard bottle"</strong> — get a 4×4 SE(3) pose matrix.
       No object-specific training. No CAD model at inference.
@@ -494,10 +252,10 @@ footer{
     <div class="hero-badges">
       <span class="badge">Python 3.9</span>
       <span class="badge">Docker · CUDA 12.1</span>
-      <span class="badge">Mistral via Ollama</span>
+      <span class="badge">Mistral · Ollama</span>
       <span class="badge">PyTorch 2.4</span>
       <span class="badge">YOLOE open-vocab</span>
-      <span class="badge">Any6D · CVPR 2025</span>
+      <span class="badge">Any6D</span>
       <span class="badge">PyBullet · Franka Panda</span>
     </div>
     <div class="hero-btns">
@@ -529,7 +287,7 @@ footer{
   </div>
 </section>
 
-<!-- ── ARCHITECTURE ──────────────────────────────────── -->
+<!-- ARCHITECTURE -->
 <section id="architecture">
   <p class="section-label fade-up">How it works</p>
   <h2 class="section-title fade-up">System Architecture</h2>
@@ -539,73 +297,78 @@ footer{
     <div class="arch-step" style="transition-delay:.1s">
       <div class="arch-icon">🗣️</div>
       <h3>LLM</h3>
-      <p>Converts a natural language instruction into a concise visual keyword</p>
+      <p>Converts a natural language instruction into a visual keyword</p>
       <div class="arch-badge">Mistral · Ollama</div>
     </div>
     <div class="arch-arrow">
       <div class="arch-arrow-line"></div>
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
     <div class="arch-step" style="transition-delay:.2s">
       <div class="arch-icon">👁️</div>
       <h3>YOLOE</h3>
-      <p>Open-vocabulary segmentation — produces a binary pixel mask of the target</p>
+      <p>Open-vocabulary segmentation — pixel mask of the target object</p>
       <div class="arch-badge">yoloe-26l-seg.pt</div>
     </div>
     <div class="arch-arrow">
       <div class="arch-arrow-line"></div>
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
     <div class="arch-step" style="transition-delay:.3s">
       <div class="arch-icon">📐</div>
       <h3>Any6D</h3>
-      <p>Model-free 6D pose estimator — returns a 4×4 SE(3) matrix from RGB-D + mask</p>
-      <div class="arch-badge">CVPR 2025</div>
+      <p>Model-free 6D pose estimator — 4×4 SE(3) matrix from RGB-D + mask</p>
+      <div class="arch-badge">Pose Estimation</div>
     </div>
     <div class="arch-arrow">
       <div class="arch-arrow-line"></div>
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
     <div class="arch-step" style="transition-delay:.4s">
       <div class="arch-icon">🤖</div>
       <h3>Panda Sim</h3>
-      <p>PyBullet Franka Panda grasp simulation validates the pose in physics</p>
-      <div class="arch-badge">PyBullet · 8.06cm lift</div>
+      <p>PyBullet Franka Panda grasp simulation validates pose in physics</p>
+      <div class="arch-badge">8.06 cm lift ✓</div>
     </div>
   </div>
 
-  <div class="arch-output" style="transition-delay:.5s">
+  <!-- Pipeline figure from assets -->
+  <div class="pipeline-img-wrap" style="transition-delay:.5s">
+    <img src="assets/pipeline.png" alt="PoseLingua6D pipeline diagram"/>
+  </div>
+
+  <div class="arch-output" style="transition-delay:.6s">
     <span class="c-green">"Hand me the yellow mustard bottle"</span><br/>
-    &nbsp;&nbsp;<span class="c-gray">→ LLM keyword:</span>  <span class="c-blue">"mustard bottle"</span><br/>
-    &nbsp;&nbsp;<span class="c-gray">→ YOLOE conf:</span>  <span class="c-yellow">0.74</span><br/>
-    &nbsp;&nbsp;<span class="c-gray">→ Pose 4×4 (metres):</span><br/>
-    &nbsp;&nbsp;&nbsp;&nbsp;<span class="c-blue">+0.9982 -0.0124 +0.0156 +0.1420</span><br/>
-    &nbsp;&nbsp;&nbsp;&nbsp;<span class="c-blue">+0.0121 +0.9999 +0.0089 -0.0531</span><br/>
-    &nbsp;&nbsp;&nbsp;&nbsp;<span class="c-blue">-0.0157 -0.0087 +0.9998 +0.6230</span><br/>
-    &nbsp;&nbsp;<span class="c-gray">→ Grasp simulation:</span> <span class="c-green">SUCCESS ✓  lifted=0.081m  contacts=5</span>
+    &nbsp;&nbsp;<span class="c-gray">→ LLM keyword :</span>  <span class="c-blue">"mustard bottle"</span><br/>
+    &nbsp;&nbsp;<span class="c-gray">→ YOLOE conf &nbsp;:</span>  <span class="c-yellow">0.74</span><br/>
+    &nbsp;&nbsp;<span class="c-gray">→ Pose 4×4 (m) :</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="c-blue">+0.9982 -0.0124 +0.0156 &nbsp;+0.142</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="c-blue">+0.0121 +0.9999 +0.0089 &nbsp;-0.053</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="c-blue">-0.0157 -0.0087 +0.9998 &nbsp;+0.623</span><br/>
+    &nbsp;&nbsp;<span class="c-gray">→ Grasp sim &nbsp;&nbsp; :</span> <span class="c-green">SUCCESS ✓  lifted=0.081 m  contacts=5</span>
   </div>
 </section>
 
-<!-- ── RESULTS ───────────────────────────────────────── -->
+<!-- RESULTS -->
 <section id="results">
   <p class="section-label fade-up">Evaluation</p>
   <h2 class="section-title fade-up">Results & Metrics</h2>
-  <p class="section-sub fade-up">Evaluated on LINEMOD, YCB-Video, and HO3D. Full BOP evaluation with ADD, ADD-S, AR, MSSD, MSPD.</p>
+  <p class="section-sub fade-up">Evaluated on LINEMOD, YCB-Video, and HO3D with ADD, ADD-S, AR, MSSD, MSPD metrics.</p>
 
   <div class="results-grid">
     <div class="result-card" style="transition-delay:.05s">
       <div class="result-num" data-count="97.8">0</div>
-      <div class="result-label">ADD-S (mustard bottle)</div>
+      <div class="result-label">ADD-S · mustard bottle</div>
       <div class="result-dataset">HO3D · SM1</div>
     </div>
     <div class="result-card" style="transition-delay:.1s">
       <div class="result-num" data-count="100">0</div>
-      <div class="result-label">ADD (can object)</div>
+      <div class="result-label">ADD · can object</div>
       <div class="result-dataset">LINEMOD</div>
     </div>
     <div class="result-card" style="transition-delay:.15s">
       <div class="result-num" data-count="92.5">0</div>
-      <div class="result-label">ADD-S (SPAM can)</div>
+      <div class="result-label">ADD-S · SPAM can</div>
       <div class="result-dataset">HO3D · MPM10</div>
     </div>
     <div class="result-card" style="transition-delay:.2s">
@@ -614,8 +377,8 @@ footer{
       <div class="result-dataset">test_pipeline_functions.py</div>
     </div>
     <div class="result-card" style="transition-delay:.25s">
-      <div class="result-num" data-count="8.06">0</div>
-      <div class="result-label">cm grasp lift (sim)</div>
+      <div class="result-num" data-suffix="cm" data-count="8.06">0</div>
+      <div class="result-label">Grasp lift (simulation)</div>
       <div class="result-dataset">PyBullet · Franka Panda</div>
     </div>
     <div class="result-card" style="transition-delay:.3s">
@@ -628,9 +391,7 @@ footer{
   <div class="results-table-wrap fade-up">
     <table>
       <thead>
-        <tr>
-          <th>Dataset</th><th>Sequence / Object</th><th>Det Rate</th><th>ADD-S</th><th>AR</th><th>R_med</th>
-        </tr>
+        <tr><th>Dataset</th><th>Sequence / Object</th><th>Det Rate</th><th>ADD-S</th><th>AR</th><th>R_med</th></tr>
       </thead>
       <tbody>
         <tr><td><span class="tag tag-blue">HO3D</span></td><td>MPM10 — SPAM can</td><td>91%</td><td><strong>92.5%</strong></td><td>45.0</td><td>3.2°</td></tr>
@@ -638,86 +399,88 @@ footer{
         <tr><td><span class="tag tag-blue">HO3D</span></td><td>AP11 — Blue pitcher</td><td><span class="tag tag-green">100%</span></td><td>57.5%</td><td>28.3</td><td>—</td></tr>
         <tr><td><span class="tag tag-blue">HO3D</span></td><td>SB11 — Bleach bottle</td><td><span class="tag tag-green">100%</span></td><td>72.5%</td><td>50.4</td><td>—</td></tr>
         <tr><td><span class="tag tag-blue">HO3D</span></td><td>SM1 — Mustard bottle</td><td>92.1%</td><td><span class="tag tag-green">97.8%</span></td><td>32.9</td><td>—</td></tr>
-        <tr><td><span class="tag tag-orange">LINEMOD</span></td><td>can</td><td>0% (GT fallback)</td><td>—</td><td>—</td><td>1.1°</td></tr>
+        <tr><td><span class="tag tag-orange">LINEMOD</span></td><td>can</td><td>GT fallback</td><td>—</td><td>—</td><td>1.1°</td></tr>
         <tr><td><span class="tag tag-orange">LINEMOD</span></td><td>driller</td><td>52%</td><td>—</td><td>—</td><td>—</td></tr>
       </tbody>
     </table>
   </div>
 </section>
 
-<!-- ── DEMO ──────────────────────────────────────────── -->
+<!-- DEMO -->
 <section id="demo">
   <p class="section-label fade-up">Quick Start</p>
   <h2 class="section-title fade-up">Run in 5 Steps</h2>
-  <p class="section-sub fade-up">NVIDIA GPU + Docker is the only requirement. Everything else is automated.</p>
+  <p class="section-sub fade-up">NVIDIA GPU + Docker is the only hard requirement. Everything else is automated.</p>
 
   <div class="demo-grid">
-    <div>
-      <div class="demo-steps">
-        <div class="demo-step" style="transition-delay:.05s">
-          <div class="demo-step-num">1</div>
-          <div class="demo-step-body">
-            <h4>Clone the repo</h4>
-            <p><code>git clone https://github.com/josue-do-it/lang6d-pose-yoloe.git</code></p>
-          </div>
+    <!-- Scene description visual -->
+  <div class="fade-up" style="margin-bottom:48px;border-radius:var(--radius);overflow:hidden;border:1.5px solid var(--border);box-shadow:var(--shadow)">
+    <img src="assets/scene_description.png" alt="Scene description — language to pose" style="width:100%;object-fit:contain;max-height:320px;background:#fafafa"/>
+  </div>
+
+  <div class="demo-steps">
+      <div class="demo-step" style="transition-delay:.05s">
+        <div class="demo-step-num">1</div>
+        <div class="demo-step-body">
+          <h4>Clone the repo</h4>
+          <p><code>git clone https://github.com/josue-do-it/lang6d-pose-yoloe.git</code></p>
         </div>
-        <div class="demo-step" style="transition-delay:.1s">
-          <div class="demo-step-num">2</div>
-          <div class="demo-step-body">
-            <h4>Build Docker image</h4>
-            <p>Run <code>bash build_any6d.sh</code> — takes 30–60 min on first build (CUDA 12.1 + FoundationPose).</p>
-          </div>
+      </div>
+      <div class="demo-step" style="transition-delay:.1s">
+        <div class="demo-step-num">2</div>
+        <div class="demo-step-body">
+          <h4>Build Docker image</h4>
+          <p>Run <code>bash build_any6d.sh</code> — 30–60 min on first build (CUDA 12.1 + FoundationPose).</p>
         </div>
-        <div class="demo-step" style="transition-delay:.15s">
-          <div class="demo-step-num">3</div>
-          <div class="demo-step-body">
-            <h4>Pull Mistral LLM</h4>
-            <p><code>ollama pull mistral:latest</code> on the host. Container reaches it at <code>172.18.0.1:11434</code>.</p>
-          </div>
+      </div>
+      <div class="demo-step" style="transition-delay:.15s">
+        <div class="demo-step-num">3</div>
+        <div class="demo-step-body">
+          <h4>Pull Mistral LLM</h4>
+          <p><code>ollama pull mistral:latest</code> on the host. Container reaches it at <code>172.18.0.1:11434</code>.</p>
         </div>
-        <div class="demo-step" style="transition-delay:.2s">
-          <div class="demo-step-num">4</div>
-          <div class="demo-step-body">
-            <h4>Run unit tests (no GPU needed)</h4>
-            <p><code>python3 test_pipeline_functions.py -v</code> — 42 tests, 0 failures.</p>
-          </div>
+      </div>
+      <div class="demo-step" style="transition-delay:.2s">
+        <div class="demo-step-num">4</div>
+        <div class="demo-step-body">
+          <h4>Unit tests (no GPU needed)</h4>
+          <p><code>python3 test_pipeline_functions.py -v</code> — 42 tests, 0 failures.</p>
         </div>
-        <div class="demo-step" style="transition-delay:.25s">
-          <div class="demo-step-num">5</div>
-          <div class="demo-step-body">
-            <h4>Run your first evaluation</h4>
-            <p><code>run_full_pipeline_linemod.py --obj_ids 8 --max_frames 3</code></p>
-          </div>
+      </div>
+      <div class="demo-step" style="transition-delay:.25s">
+        <div class="demo-step-num">5</div>
+        <div class="demo-step-body">
+          <h4>Run your first evaluation</h4>
+          <p><code>run_full_pipeline_linemod.py --obj_ids 8 --max_frames 3</code></p>
         </div>
       </div>
     </div>
-    <div class="demo-img-wrap fade-up">
-      <div style="background:var(--code-bg);padding:28px;border-radius:var(--radius)">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--code-txt);line-height:1.9">
-          <span class="c-gray"># Supported datasets</span><br/><br/>
-          <span class="c-green">LINEMOD</span> &nbsp;&nbsp;&nbsp;&nbsp; 15 objects &nbsp; ADD, ADD-S<br/>
-          <span class="c-green">YCB-Video</span> &nbsp;&nbsp; 21 objects &nbsp; ADD, ADD-S<br/>
-          <span class="c-green">HO3D</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 13 seqs &nbsp;&nbsp;&nbsp; Full BOP<br/><br/>
-          <span class="c-gray"># Supported modes</span><br/><br/>
-          <span class="c-blue">--instruction</span> &nbsp; natural language<br/>
-          <span class="c-blue">--dataset lm</span> &nbsp;&nbsp; calibrated prompts<br/>
-          <span class="c-blue">--skip_llm</span> &nbsp;&nbsp;&nbsp; direct keyword<br/>
-          <span class="c-blue">--anchor_*</span> &nbsp;&nbsp;&nbsp; relative correction<br/><br/>
-          <span class="c-gray"># Output files</span><br/><br/>
-          <span class="c-yellow">pose_4x4.txt</span> &nbsp;&nbsp; 4×4 SE(3) matrix<br/>
-          <span class="c-yellow">result.json</span> &nbsp;&nbsp;&nbsp; full summary<br/>
-          <span class="c-yellow">viz_pipeline.png</span> 4-panel figure
+    <div>
+      <div class="demo-img-wrap fade-up" style="margin-bottom:20px">
+        <img src="assets/viz_test_driller.png" alt="Driller detection and pose" style="width:100%;border-radius:var(--radius)"/>
+      </div>
+      <div class="demo-img-wrap fade-up" style="transition-delay:.1s">
+        <div style="background:var(--code-bg);padding:22px;border-radius:var(--radius)">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.79rem;color:var(--code-txt);line-height:1.9;white-space:pre"><span class="c-gray"># Output files</span>
+
+<span class="c-yellow">pose_4x4.txt</span>     4×4 SE(3) matrix (metres)
+<span class="c-yellow">result.json</span>      instruction, keyword, conf, pose
+<span class="c-yellow">viz_pipeline.png</span> RGB · Depth · Mask · Pose axes
+
+<span class="c-gray"># Supported datasets</span>
+
+<span class="c-green">LINEMOD</span>   15 objects   ADD, ADD-S
+<span class="c-green">YCB-Video</span> 21 objects   ADD, ADD-S
+<span class="c-green">HO3D</span>      13 sequences Full BOP</div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── FOOTER ────────────────────────────────────────── -->
+<!-- FOOTER -->
 <footer>
-  <div class="footer-left">
-    Lang6D Pose — AIMS Research Project · 2025
-  </div>
+  <div class="footer-left">PoseLingua6D — AIMS Research Project · 2025</div>
   <div class="footer-right">
     <a href="https://github.com/josue-do-it/lang6d-pose-yoloe" target="_blank">GitHub</a>
     <a href="#" onclick="openDocs(event)">Docs</a>
@@ -726,135 +489,139 @@ footer{
   </div>
 </footer>
 
-<!-- ── DOCS OVERLAY & MODAL ──────────────────────────── -->
+<!-- DOCS OVERLAY -->
 <div id="docs-overlay" onclick="closeDocs()"></div>
 <div id="docs-modal">
   <div class="docs-header">
-    <h2>📖 Documentation</h2>
+    <h2>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      PoseLingua6D — Documentation
+    </h2>
     <button class="docs-close" onclick="closeDocs()">✕</button>
   </div>
-  <div class="docs-body">
-    <nav class="docs-nav">
-      <a href="#doc-quickstart" onclick="navTo(event,'doc-quickstart')">0. Quick Start</a>
-      <a href="#doc-overview" onclick="navTo(event,'doc-overview')">1. Overview</a>
-      <a href="#doc-arch" onclick="navTo(event,'doc-arch')">2. Architecture</a>
-      <a href="#doc-layout" onclick="navTo(event,'doc-layout')">3. Repo Layout</a>
-      <a href="#doc-env" onclick="navTo(event,'doc-env')">4. Environment</a>
-      <a href="#doc-datasets" onclick="navTo(event,'doc-datasets')">5. Datasets</a>
-      <a href="#doc-core" onclick="navTo(event,'doc-core')">6. Core Modules</a>
-      <a href="#doc-scripts" onclick="navTo(event,'doc-scripts')">7. Pipeline Scripts</a>
-      <a href="#doc-eval" onclick="navTo(event,'doc-eval')">8. Evaluations</a>
-      <a href="#doc-infer" onclick="navTo(event,'doc-infer')">9. Single-Image</a>
-      <a href="#doc-results" onclick="navTo(event,'doc-results')">10. Results</a>
-      <a href="#doc-tests" onclick="navTo(event,'doc-tests')">11. Unit Tests</a>
-      <a href="#doc-llm" onclick="navTo(event,'doc-llm')">12. LLM Calibration</a>
-      <a href="#doc-limits" onclick="navTo(event,'doc-limits')">13. Limitations</a>
-      <a href="#doc-repro" onclick="navTo(event,'doc-repro')">14. Reproduce</a>
-    </nav>
-    <div class="docs-content" id="docs-content-scroll">
 
-      <!-- 0 -->
-      <div class="docs-section" id="doc-quickstart">
-        <h2>0. Quick Start</h2>
-        <p>Prerequisites: NVIDIA GPU, Docker + NVIDIA Container Toolkit, Ollama running on host.</p>
-        <h3>Step 1 — Clone</h3>
-        <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>git clone https://github.com/josue-do-it/lang6d-pose-yoloe.git
+  <!-- Horizontal tab bar -->
+  <div class="docs-tabs" id="docs-tabs">
+    <a onclick="tabTo(event,'doc-quickstart')" class="active"><span class="tab-num">0</span>Quick Start</a>
+    <a onclick="tabTo(event,'doc-overview')"><span class="tab-num">1</span>Overview</a>
+    <a onclick="tabTo(event,'doc-arch')"><span class="tab-num">2</span>Architecture</a>
+    <a onclick="tabTo(event,'doc-layout')"><span class="tab-num">3</span>Repo Layout</a>
+    <a onclick="tabTo(event,'doc-env')"><span class="tab-num">4</span>Environment</a>
+    <a onclick="tabTo(event,'doc-datasets')"><span class="tab-num">5</span>Datasets</a>
+    <a onclick="tabTo(event,'doc-core')"><span class="tab-num">6</span>Core Modules</a>
+    <a onclick="tabTo(event,'doc-scripts')"><span class="tab-num">7</span>Pipeline Scripts</a>
+    <a onclick="tabTo(event,'doc-eval')"><span class="tab-num">8</span>Evaluations</a>
+    <a onclick="tabTo(event,'doc-infer')"><span class="tab-num">9</span>Single-Image</a>
+    <a onclick="tabTo(event,'doc-results')"><span class="tab-num">10</span>Results</a>
+    <a onclick="tabTo(event,'doc-tests')"><span class="tab-num">11</span>Unit Tests</a>
+    <a onclick="tabTo(event,'doc-llm')"><span class="tab-num">12</span>LLM Calib.</a>
+    <a onclick="tabTo(event,'doc-limits')"><span class="tab-num">13</span>Limitations</a>
+    <a onclick="tabTo(event,'doc-repro')"><span class="tab-num">14</span>Reproduce</a>
+  </div>
+
+  <div class="docs-content" id="docs-content-scroll">
+
+    <!-- 0 -->
+    <div class="docs-section" id="doc-quickstart">
+      <h2>0. Quick Start</h2>
+      <p>Prerequisites: NVIDIA GPU, Docker + NVIDIA Container Toolkit, Ollama running on host.</p>
+      <h3>Step 1 — Clone</h3>
+      <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>git clone https://github.com/josue-do-it/lang6d-pose-yoloe.git
 cd lang6d-pose-yoloe</div>
-        <h3>Step 2 — Build Docker</h3>
-        <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>bash build_any6d.sh
+      <h3>Step 2 — Build Docker</h3>
+      <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>bash build_any6d.sh
 docker compose -f Any6D/docker-compose.yml up -d
 docker ps | grep any6d_active</div>
-        <h3>Step 3 — Pull LLM model</h3>
-        <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>curl -fsSL https://ollama.com/install.sh | sh
+      <h3>Step 3 — Pull LLM</h3>
+      <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>curl -fsSL https://ollama.com/install.sh | sh
 ollama pull mistral:latest
 # Container reaches Ollama at http://172.18.0.1:11434</div>
-        <h3>Step 4 — Unit tests (no GPU needed)</h3>
-        <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>docker exec any6d_active \
+      <h3>Step 4 — Unit tests (no GPU needed)</h3>
+      <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>docker exec any6d_active \
   /opt/conda/envs/Any6D/bin/python3 \
   /workspace/pipeline_scripts/test_pipeline_functions.py -v
 # Expected: 42 tests, 0 failures, 0 errors</div>
-        <h3>Step 5 — Run evaluation</h3>
-        <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button># LINEMOD quick test (driller, 3 frames)
+      <h3>Step 5 — Run evaluation</h3>
+      <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button># LINEMOD — driller, 3 frames
 docker exec any6d_active \
   /opt/conda/envs/Any6D/bin/python3 \
   /workspace/pipeline_scripts/run_full_pipeline_linemod.py \
   --obj_ids 8 --max_frames 3
 
-# YCB-Video quick test (mustard bottle, scene 52, 3 frames)
+# YCB-Video — mustard bottle, scene 52, 3 frames
 docker exec any6d_active \
   /opt/conda/envs/Any6D/bin/python3 \
   /workspace/pipeline_scripts/run_full_pipeline_ycbv.py \
   --obj_ids 5 --scene_id 52 --max_frames 3
 
-# HO3D quick test (MPM10, 5 frames)
+# HO3D — MPM10, 5 frames
 docker exec any6d_active \
   /opt/conda/envs/Any6D/bin/python3 \
   /workspace/pipeline_scripts/run_full_pipeline_ho3d.py \
   --sequences MPM10 --max_frames 5</div>
-      </div>
+    </div>
 
-      <!-- 1 -->
-      <div class="docs-section" id="doc-overview">
-        <h2>1. Overview</h2>
-        <p>Given an <strong>RGB-D image</strong> and a <strong>free-form natural language instruction</strong>, the pipeline:</p>
-        <ol>
-          <li>Sends the instruction to a local <strong>LLM</strong> (Mistral via Ollama) → concise visual keyword.</li>
-          <li>Passes that keyword to <strong>YOLOE</strong> → pixel mask of the target object.</li>
-          <li>Feeds RGB-D + mask to <strong>Any6D</strong> → 4×4 pose matrix relative to an anchor view.</li>
-        </ol>
-        <p>Output: a <strong>6D pose</strong> (rotation + translation) in camera frame, suitable for robot grasping.</p>
-        <h3>Why it matters</h3>
-        <p>Classical pose estimators require class-specific training or a known 3D CAD model. This pipeline requires:</p>
-        <ul>
-          <li><strong>No training</strong> on target objects.</li>
-          <li><strong>No CAD model</strong> at inference time.</li>
-          <li><strong>Natural language</strong> as the only user interface.</li>
-        </ul>
-        <h3>Supported datasets</h3>
-        <div class="docs-table-wrap">
-          <table class="docs-table">
-            <tr><th>Dataset</th><th>Objects</th><th>Metrics</th></tr>
-            <tr><td>LINEMOD (LM)</td><td>15 tabletop objects</td><td>ADD, ADD-S</td></tr>
-            <tr><td>YCB-Video (YCBV)</td><td>21 household objects</td><td>ADD, ADD-S</td></tr>
-            <tr><td>HO3D</td><td>13 hand-object sequences</td><td>ADD-S, AR, MSSD, MSPD, VSD</td></tr>
-          </table>
-        </div>
+    <!-- 1 -->
+    <div class="docs-section" id="doc-overview">
+      <h2>1. Overview</h2>
+      <p>Given an <strong>RGB-D image</strong> and a <strong>free-form natural language instruction</strong>, the pipeline:</p>
+      <ol>
+        <li>Sends the instruction to a local <strong>LLM</strong> (Mistral via Ollama) → concise visual keyword.</li>
+        <li>Passes that keyword to <strong>YOLOE</strong> → pixel mask of the target object.</li>
+        <li>Feeds RGB-D + mask to <strong>Any6D</strong> → 4×4 pose matrix relative to an anchor view.</li>
+      </ol>
+      <h3>Why it matters</h3>
+      <ul>
+        <li><strong>No training</strong> on target objects.</li>
+        <li><strong>No CAD model</strong> at inference time.</li>
+        <li><strong>Natural language</strong> as the only user interface.</li>
+      </ul>
+      <h3>Supported datasets</h3>
+      <div class="docs-table-wrap">
+        <table class="docs-table">
+          <tr><th>Dataset</th><th>Objects</th><th>Metrics</th></tr>
+          <tr><td>LINEMOD (LM)</td><td>15 tabletop objects</td><td>ADD, ADD-S</td></tr>
+          <tr><td>YCB-Video (YCBV)</td><td>21 household objects</td><td>ADD, ADD-S</td></tr>
+          <tr><td>HO3D</td><td>13 hand-object sequences</td><td>ADD-S, AR, MSSD, MSPD, VSD</td></tr>
+        </table>
       </div>
+    </div>
 
-      <!-- 2 -->
-      <div class="docs-section" id="doc-arch">
-        <h2>2. System Architecture</h2>
-        <div class="docs-pre">User instruction (natural language)
-          │
-          ▼
+    <!-- 2 -->
+    <div class="docs-section" id="doc-arch">
+      <h2>2. System Architecture</h2>
+      <img src="assets/pipeline.png" alt="Pipeline diagram" style="border-radius:8px;margin-bottom:20px;border:1px solid var(--border)"/>
+      <div class="docs-pre">User instruction (natural language)
+        │
+        ▼
 ┌─────────────────────┐
-│   LLM (Mistral)     │  Ollama REST API · host 172.18.0.1:11434
+│   LLM (Mistral)     │  Ollama REST API · 172.18.0.1:11434
 │   core/llm.py       │  Extracts 1–3 word visual keyword
 └─────────┬───────────┘
           │  keyword (e.g. "yellow mustard bottle")
           ▼
 ┌─────────────────────┐
 │  YOLOE Segmentation │  Open-vocabulary instance segmentation
-│  core/detection.py  │  yoloe-26l-seg.pt · conf threshold 0.1
+│  core/detection.py  │  yoloe-26l-seg.pt · conf ≥ 0.1
 └─────────┬───────────┘
           │  binary pixel mask
           ▼
 ┌─────────────────────┐
-│  Any6D Registration │  Model-free 6D pose estimator (CVPR 2025)
+│  Any6D Registration │  Model-free 6D pose estimator
 │  estimater.py       │  est.register(K, rgb, depth, ob_mask, iter=5)
 └─────────┬───────────┘
           │
           ▼
-   4×4 SE(3) pose matrix  →  result.json · pose_4x4.txt · viz_pipeline.png</div>
-        <h3>Anchor correction (HO3D)</h3>
-        <div class="docs-pre">corrected_pose = (pred_query @ inv(pred_anchor)) @ gt_anchor</div>
-        <p>A reference <em>anchor</em> frame with known GT pose cancels systematic error when query and anchor views differ significantly.</p>
-      </div>
+   4×4 SE(3) pose  →  result.json · pose_4x4.txt · viz_pipeline.png</div>
+      <h3>Anchor correction (HO3D)</h3>
+      <div class="docs-pre">corrected_pose = (pred_query @ inv(pred_anchor)) @ gt_anchor</div>
+      <p>A reference <em>anchor</em> frame with known GT pose cancels systematic error when query and anchor views differ significantly.</p>
+    </div>
 
-      <!-- 3 -->
-      <div class="docs-section" id="doc-layout">
-        <h2>3. Repository Layout</h2>
-        <div class="docs-pre">lang6d-pose-yoloe/
+    <!-- 3 -->
+    <div class="docs-section" id="doc-layout">
+      <h2>3. Repository Layout</h2>
+      <div class="docs-pre">lang6d-pose-yoloe/
 ├── Any6D/
 │   ├── core/                    ★ Shared utilities (DRY module)
 │   │   ├── constants.py         Global constants
@@ -868,7 +635,7 @@ docker exec any6d_active \
 │   │   ├── run_full_pipeline_linemod.py
 │   │   ├── run_full_pipeline_ycbv.py
 │   │   ├── run_full_pipeline_ho3d.py
-│   │   └── test_pipeline_functions.py  (42 unit tests)
+│   │   └── test_pipeline_functions.py  42 unit tests
 │   ├── pybullet_sim/
 │   │   └── pybullet_panda_pipeline.py  Franka Panda grasp sim
 │   ├── estimater.py             Any6D pose estimator  ← DO NOT EDIT
@@ -876,115 +643,114 @@ docker exec any6d_active \
 │   ├── foundationpose/          ← DO NOT EDIT
 │   ├── sam2/                    ← DO NOT EDIT
 │   ├── instantmesh/             ← DO NOT EDIT
-│   └── bop_toolkit/             ← DO NOT EDIT</div>
-      </div>
+│   └── bop_toolkit/             ← DO NOT EDIT
+└── assets/
+    ├── logo.png
+    ├── pipeline.png
+    └── viz_test_driller.png</div>
+    </div>
 
-      <!-- 4 -->
-      <div class="docs-section" id="doc-env">
-        <h2>4. Environment Setup</h2>
-        <h3>Prerequisites</h3>
-        <ul>
-          <li>NVIDIA GPU with CUDA 12.1 support (tested on NVIDIA L4, sm_89)</li>
-          <li>Docker with NVIDIA Container Toolkit</li>
-          <li>GCP VM: <code>g2-standard-4</code> recommended</li>
-        </ul>
-        <h3>Build Docker image</h3>
-        <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>bash setup_any6d.sh       # Full setup from scratch
-bash build_any6d.sh       # Build image only (repo already cloned)</div>
-        <h3>Start the container</h3>
-        <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>docker compose -f Any6D/docker-compose.yml up -d
+    <!-- 4 -->
+    <div class="docs-section" id="doc-env">
+      <h2>4. Environment Setup</h2>
+      <h3>Prerequisites</h3>
+      <ul>
+        <li>NVIDIA GPU with CUDA 12.1 support (tested on NVIDIA L4, sm_89)</li>
+        <li>Docker with NVIDIA Container Toolkit</li>
+        <li>GCP VM: <code>g2-standard-4</code> recommended</li>
+      </ul>
+      <h3>Build Docker image</h3>
+      <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>bash setup_any6d.sh       # Full setup from scratch
+bash build_any6d.sh       # Build image only</div>
+      <h3>Start container</h3>
+      <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>docker compose -f Any6D/docker-compose.yml up -d
 # Container name: any6d_active</div>
-        <h3>Host environment (YOLOE)</h3>
-        <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>bash setup_master_env.sh
+      <h3>Host environment (YOLOE)</h3>
+      <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>bash setup_master_env.sh
 # Place weights at: /workspace/yoloe/yoloe-26l-seg.pt</div>
-        <div class="callout"><strong>Memory warning:</strong> Do not run more than one dataset pipeline simultaneously. Running LM + YCBV + HO3D in parallel exhausts the 22 GB GPU VRAM.</div>
-      </div>
+      <div class="callout"><strong>Memory warning:</strong> Do not run more than one dataset pipeline simultaneously — 22 GB GPU VRAM is the limit.</div>
+    </div>
 
-      <!-- 5 -->
-      <div class="docs-section" id="doc-datasets">
-        <h2>5. Dataset Setup</h2>
-        <p>All datasets are mounted at <code>/workspace/dataset/</code> inside the container.</p>
-        <h3>LINEMOD (LM)</h3>
-        <div class="docs-pre">/workspace/dataset/lm/
-├── models/          # .ply mesh files (obj_000001.ply … 000015.ply)
+    <!-- 5 -->
+    <div class="docs-section" id="doc-datasets">
+      <h2>5. Dataset Setup</h2>
+      <p>All datasets are mounted at <code>/workspace/dataset/</code> inside the container.</p>
+      <h3>LINEMOD (LM)</h3>
+      <div class="docs-pre">/workspace/dataset/lm/
+├── models/        obj_000001.ply … 000015.ply
 ├── test/000001/ … 000015/
-│   ├── rgb/         # 640×480 PNG
-│   ├── depth/       # uint16 PNG (mm)
+│   ├── rgb/       640×480 PNG
+│   ├── depth/     uint16 PNG (mm)
 │   └── scene_gt.json
 └── test_targets_bop19.json</div>
-        <h3>YCB-Video (YCBV)</h3>
-        <div class="docs-pre">/workspace/dataset/ycbv/
-├── models/          # 21 object meshes
+      <h3>YCB-Video (YCBV)</h3>
+      <div class="docs-pre">/workspace/dataset/ycbv/
+├── models/        21 object meshes
 ├── test/000048/ … 000059/
 └── test_targets_bop19.json</div>
-        <h3>HO3D</h3>
-        <div class="docs-pre">/workspace/dataset/ho3d/evaluation/
+      <h3>HO3D</h3>
+      <div class="docs-pre">/workspace/dataset/ho3d/evaluation/
 ├── MPM10/ MPM11/ … MPM14/
-├── AP10/ AP11/ … AP14/
-├── SB11/ SB13/
+├── AP10/  AP11/  … AP14/
+├── SB11/  SB13/
 └── SM1/
-    ├── rgb/ depth/ meta/</div>
-      </div>
+    ├── rgb/   depth/   meta/</div>
+    </div>
 
-      <!-- 6 -->
-      <div class="docs-section" id="doc-core">
-        <h2>6. Core Module Reference</h2>
-        <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>from core.constants import YOLOE_CONF, LLM_MODEL, ADD_THRESH_RATIO
-from core.llm import call_llm, parse_llm
-from core.detection import get_detection_mask, compute_iou
-from core.pose_utils import rotation_error_deg, translation_error_cm
+    <!-- 6 -->
+    <div class="docs-section" id="doc-core">
+      <h2>6. Core Module Reference</h2>
+      <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>from core.constants    import YOLOE_CONF, LLM_MODEL, ADD_THRESH_RATIO
+from core.llm          import call_llm, parse_llm
+from core.detection    import get_detection_mask, compute_iou
+from core.pose_utils   import rotation_error_deg, translation_error_cm
 from core.metrics_utils import compute_frame_metrics, nanmean
-from core.io_utils import save_result</div>
-        <h3>core/constants.py</h3>
-        <div class="docs-table-wrap">
-          <table class="docs-table">
-            <tr><th>Constant</th><th>Value</th><th>Purpose</th></tr>
-            <tr><td><code>ADD_THRESH_RATIO</code></td><td>0.10</td><td>ADD success = error &lt; 10% diameter (BOP standard)</td></tr>
-            <tr><td><code>ANY6D_ITERS</code></td><td>5</td><td>Any6D refinement iterations per frame</td></tr>
-            <tr><td><code>YOLOE_CONF</code></td><td>0.1</td><td>Minimum detection confidence</td></tr>
-            <tr><td><code>OLLAMA_URL</code></td><td>172.18.0.1:11434</td><td>Ollama REST endpoint from inside Docker</td></tr>
-            <tr><td><code>LLM_MODEL</code></td><td>mistral:latest</td><td>LLM model served by Ollama</td></tr>
-          </table>
-        </div>
-        <h3>core/detection.py — detect_mask()</h3>
-        <div class="docs-pre">def detect_mask(img_rgb, keyword, H, W,
+from core.io_utils     import save_result</div>
+      <h3>core/constants.py</h3>
+      <div class="docs-table-wrap">
+        <table class="docs-table">
+          <tr><th>Constant</th><th>Value</th><th>Purpose</th></tr>
+          <tr><td><code>ADD_THRESH_RATIO</code></td><td>0.10</td><td>ADD success = error &lt; 10% diameter (BOP standard)</td></tr>
+          <tr><td><code>ANY6D_ITERS</code></td><td>5</td><td>Any6D refinement iterations per frame</td></tr>
+          <tr><td><code>YOLOE_CONF</code></td><td>0.1</td><td>Minimum detection confidence</td></tr>
+          <tr><td><code>OLLAMA_URL</code></td><td>172.18.0.1:11434</td><td>Ollama REST endpoint from inside Docker</td></tr>
+          <tr><td><code>LLM_MODEL</code></td><td>mistral:latest</td><td>LLM model served by Ollama</td></tr>
+        </table>
+      </div>
+      <h3>core/detection.py — detect_mask()</h3>
+      <div class="docs-pre">def detect_mask(img_rgb, keyword, H, W,
                 conf=YOLOE_CONF,
                 conf_fallbacks=(),
                 use_first_det=False,
                 bgr_input=False)
 → (mask: np.ndarray | None, score: float)</div>
-        <h3>core/pose_utils.py</h3>
-        <div class="docs-pre">rotation_error_deg(R_pred, R_gt)    → degrees in [0°, 180°]
-translation_error_cm(t_pred, t_gt)  → L2 distance in cm</div>
-        <h3>core/metrics_utils.py</h3>
-        <div class="docs-pre">compute_frame_metrics(pred_pose, gt_pose, pts, diameter, ...)
+      <h3>core/metrics_utils.py</h3>
+      <div class="docs-pre">compute_frame_metrics(pred_pose, gt_pose, pts, diameter, ...)
 → {"ADD": 1.0, "ADD-S": 1.0, "AR": ..., "R_error": ..., "T_error": ...}</div>
-      </div>
+    </div>
 
-      <!-- 7 -->
-      <div class="docs-section" id="doc-scripts">
-        <h2>7. Pipeline Scripts</h2>
-        <h3>LINEMOD — run_full_pipeline_linemod.py</h3>
-        <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>--obj_ids 1 5 8        # Evaluate objects 1, 5, 8 (default: all 15)
---max_frames 200       # Cap frames per object
---stride 5             # Evaluate every 5th frame
---llm_model mistral    # Ollama model name
+    <!-- 7 -->
+    <div class="docs-section" id="doc-scripts">
+      <h2>7. Pipeline Scripts</h2>
+      <h3>LINEMOD</h3>
+      <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>--obj_ids 1 5 8    # Objects to evaluate (default: all 15)
+--max_frames 200   # Cap frames per object
+--stride 5         # Evaluate every 5th frame
+--llm_model mistral
 --out_dir ./results/lm_pipeline</div>
-        <p>YOLOE uses argmax confidence (<code>use_first_det=False</code>), images already in RGB.</p>
-        <h3>YCB-Video — run_full_pipeline_ycbv.py</h3>
-        <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>--obj_ids 5 6          # Evaluate only objects 5 and 6
---scene_id 52          # Evaluate only scene 52
---max_frames 3         # Quick test</div>
-        <p>YOLOE uses first detection (<code>use_first_det=True</code>) and built-in default confidence.</p>
-        <h3>HO3D — run_full_pipeline_ho3d.py</h3>
-        <p>Requires anchor-based pose correction. YOLOE uses confidence fallbacks <code>(0.1, 0.05, 0.03)</code> and BGR input.</p>
-        <div class="docs-pre">corrected_pose = (pred_query @ inv(pred_anchor)) @ gt_anchor</div>
-      </div>
+      <h3>YCB-Video</h3>
+      <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>--obj_ids 5 6      # Objects 5 and 6 only
+--scene_id 52      # One scene only
+--max_frames 3     # Quick test</div>
+      <h3>HO3D</h3>
+      <p>Uses anchor-based pose correction. YOLOE confidence fallbacks <code>(0.1, 0.05, 0.03)</code>. BGR input.</p>
+      <div class="docs-pre">corrected_pose = (pred_query @ inv(pred_anchor)) @ gt_anchor</div>
+    </div>
 
-      <!-- 8 -->
-      <div class="docs-section" id="doc-eval">
-        <h2>8. Running Evaluations</h2>
-        <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button># LINEMOD full (all 15 objects)
+    <!-- 8 -->
+    <div class="docs-section" id="doc-eval">
+      <h2>8. Running Evaluations</h2>
+      <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button># LINEMOD full (all 15 objects)
 docker exec any6d_active \
     /opt/conda/envs/Any6D/bin/python3 \
     pipeline_scripts/run_full_pipeline_linemod.py
@@ -999,17 +765,17 @@ docker exec any6d_active \
     /opt/conda/envs/Any6D/bin/python3 \
     pipeline_scripts/run_full_pipeline_ho3d.py
 
-# Run in background + monitor
+# Background + monitor
 docker exec -d any6d_active bash -c \
     "python3 pipeline_scripts/run_full_pipeline_linemod.py 2>&1 | tee /tmp/lm.log"
 docker exec any6d_active tail -20 /tmp/lm.log</div>
-      </div>
+    </div>
 
-      <!-- 9 -->
-      <div class="docs-section" id="doc-infer">
-        <h2>9. Single-Image Inference</h2>
-        <h3>Case 1 — Free text prompt</h3>
-        <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>docker exec any6d_active \
+    <!-- 9 -->
+    <div class="docs-section" id="doc-infer">
+      <h2>9. Single-Image Inference</h2>
+      <h3>Free text prompt</h3>
+      <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>docker exec any6d_active \
   /opt/conda/envs/Any6D/bin/python3 \
   /workspace/pipeline_scripts/main_pipeline.py \
   --image       /workspace/my_data/rgb.png \
@@ -1017,8 +783,8 @@ docker exec any6d_active tail -20 /tmp/lm.log</div>
   --mesh        /workspace/my_data/object.ply \
   --K           572.4 572.4 325.2 242.0 \
   --instruction "Hand me the yellow mustard bottle"</div>
-        <h3>Case 2 — With anchor correction</h3>
-        <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>docker exec any6d_active python3 /workspace/pipeline_scripts/main_pipeline.py \
+      <h3>With anchor correction</h3>
+      <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>docker exec any6d_active python3 /workspace/pipeline_scripts/main_pipeline.py \
   --image        /workspace/my_data/rgb.png \
   --depth        /workspace/my_data/depth.png \
   --mesh         /workspace/my_data/object.ply \
@@ -1027,146 +793,135 @@ docker exec any6d_active tail -20 /tmp/lm.log</div>
   --anchor_image /workspace/my_data/anchor_rgb.png \
   --anchor_depth /workspace/my_data/anchor_depth.png \
   --anchor_pose  /workspace/my_data/anchor_gt_pose.txt</div>
-        <h3>Output files</h3>
-        <div class="docs-table-wrap">
-          <table class="docs-table">
-            <tr><th>File</th><th>Description</th></tr>
-            <tr><td><code>pose_4x4.txt</code></td><td>4×4 SE(3) matrix in metres</td></tr>
-            <tr><td><code>result.json</code></td><td>Instruction, keyword, YOLOE conf, pose</td></tr>
-            <tr><td><code>viz_pipeline.png</code></td><td>RGB · Depth · YOLOE mask · Pose axes</td></tr>
-          </table>
-        </div>
-        <h3>Franka Panda grasp simulation</h3>
-        <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>python3 Any6D/pybullet_sim/pybullet_panda_pipeline.py \
-    --result Any6D/results/driller_grasp/result.json \
+      <h3>Franka Panda grasp simulation</h3>
+      <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>python3 Any6D/pybullet_sim/pybullet_panda_pipeline.py \
+    --result  Any6D/results/driller_grasp/result.json \
     --out_dir Any6D/results/panda_pipeline
 # Expected: GRASP RESULT: SUCCESS ✓  lifted≈0.08m  contacts=5</div>
-      </div>
+    </div>
 
-      <!-- 10 -->
-      <div class="docs-section" id="doc-results">
-        <h2>10. Results & Metrics</h2>
-        <div class="docs-table-wrap">
-          <table class="docs-table">
-            <tr><th>Metric</th><th>Definition</th><th>Unit</th></tr>
-            <tr><td>ADD</td><td>Mean point-to-point distance &lt; 10% diameter</td><td>% frames</td></tr>
-            <tr><td>ADD-S</td><td>ADD with symmetric matching</td><td>% frames</td></tr>
-            <tr><td>AR</td><td>Mean of MSSD and MSPD binary scores</td><td>%</td></tr>
-            <tr><td>R_med</td><td>Median rotation error</td><td>degrees</td></tr>
-            <tr><td>Det_Rate</td><td>% frames where YOLOE found a detection</td><td>%</td></tr>
-          </table>
-        </div>
-        <h3>HO3D results</h3>
-        <div class="docs-table-wrap">
-          <table class="docs-table">
-            <tr><th>Sequence</th><th>Object</th><th>Det_Rate</th><th>ADD-S</th><th>AR</th></tr>
-            <tr><td>MPM10</td><td>SPAM can</td><td>91%</td><td>92.5%</td><td>45.0</td></tr>
-            <tr><td>MPM13</td><td>SPAM can</td><td>95.5%</td><td>93.6%</td><td>38.0</td></tr>
-            <tr><td>AP11</td><td>Blue pitcher</td><td>100%</td><td>57.5%</td><td>28.3</td></tr>
-            <tr><td>SB11</td><td>Bleach bottle</td><td>100%</td><td>72.5%</td><td>50.4</td></tr>
-            <tr><td>SM1</td><td>Mustard bottle</td><td>92.1%</td><td>97.8%</td><td>32.9</td></tr>
-          </table>
-        </div>
+    <!-- 10 -->
+    <div class="docs-section" id="doc-results">
+      <h2>10. Results & Metrics</h2>
+      <div class="docs-table-wrap">
+        <table class="docs-table">
+          <tr><th>Metric</th><th>Definition</th><th>Unit</th></tr>
+          <tr><td>ADD</td><td>Mean point-to-point distance &lt; 10% diameter</td><td>% frames</td></tr>
+          <tr><td>ADD-S</td><td>ADD with symmetric matching</td><td>% frames</td></tr>
+          <tr><td>AR</td><td>Mean of MSSD and MSPD binary scores</td><td>%</td></tr>
+          <tr><td>R_med</td><td>Median rotation error</td><td>degrees</td></tr>
+          <tr><td>Det_Rate</td><td>% frames where YOLOE found a detection</td><td>%</td></tr>
+        </table>
       </div>
+      <h3>HO3D results</h3>
+      <div class="docs-table-wrap">
+        <table class="docs-table">
+          <tr><th>Sequence</th><th>Object</th><th>Det_Rate</th><th>ADD-S</th><th>AR</th></tr>
+          <tr><td>MPM10</td><td>SPAM can</td><td>91%</td><td><strong>92.5%</strong></td><td>45.0</td></tr>
+          <tr><td>MPM13</td><td>SPAM can</td><td>95.5%</td><td><strong>93.6%</strong></td><td>38.0</td></tr>
+          <tr><td>AP11</td><td>Blue pitcher</td><td>100%</td><td>57.5%</td><td>28.3</td></tr>
+          <tr><td>SB11</td><td>Bleach bottle</td><td>100%</td><td>72.5%</td><td>50.4</td></tr>
+          <tr><td>SM1</td><td>Mustard bottle</td><td>92.1%</td><td><strong>97.8%</strong></td><td>32.9</td></tr>
+        </table>
+      </div>
+    </div>
 
-      <!-- 11 -->
-      <div class="docs-section" id="doc-tests">
-        <h2>11. Unit Tests</h2>
-        <p>42 tests across 7 classes. <strong>No GPU, no Docker, no dataset required.</strong></p>
-        <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>python3 Any6D/pipeline_scripts/test_pipeline_functions.py -v
+    <!-- 11 -->
+    <div class="docs-section" id="doc-tests">
+      <h2>11. Unit Tests</h2>
+      <p>42 tests across 7 classes. <strong>No GPU, no Docker, no dataset required.</strong></p>
+      <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>python3 Any6D/pipeline_scripts/test_pipeline_functions.py -v
 # Expected: 42 tests — 0 failures, 0 errors</div>
-        <div class="docs-table-wrap">
-          <table class="docs-table">
-            <tr><th>Class</th><th>Covers</th></tr>
-            <tr><td><code>TestParseLlm</code></td><td>LLM response parsing: arrow, quoted, prefix, multiline, empty</td></tr>
-            <tr><td><code>TestRotationError</code></td><td>Geodesic rotation error: identity, 90°, 180°</td></tr>
-            <tr><td><code>TestTranslationError</code></td><td>Euclidean translation error: zero, 10 cm, diagonal</td></tr>
-            <tr><td><code>TestNanmean</code></td><td>NaN-aware mean: valid, mixed, all-NaN, empty</td></tr>
-            <tr><td><code>TestComputeIoU</code></td><td>IoU: perfect, zero, partial, None GT</td></tr>
-            <tr><td><code>TestMetadata</code></td><td>LM_NAMES, LM_INSTRUCTIONS, BOP constants</td></tr>
-            <tr><td><code>TestCalibratedSystem</code></td><td>System prompt ≥600 examples, full dataset coverage</td></tr>
-          </table>
-        </div>
+      <div class="docs-table-wrap">
+        <table class="docs-table">
+          <tr><th>Class</th><th>Covers</th></tr>
+          <tr><td><code>TestParseLlm</code></td><td>LLM response parsing: arrow, quoted, prefix, multiline, empty</td></tr>
+          <tr><td><code>TestRotationError</code></td><td>Geodesic rotation error: identity, 90°, 180°</td></tr>
+          <tr><td><code>TestTranslationError</code></td><td>Euclidean translation error: zero, 10 cm, diagonal</td></tr>
+          <tr><td><code>TestNanmean</code></td><td>NaN-aware mean: valid, mixed, all-NaN, empty</td></tr>
+          <tr><td><code>TestComputeIoU</code></td><td>IoU: perfect, zero, partial, None GT</td></tr>
+          <tr><td><code>TestMetadata</code></td><td>LM_NAMES, LM_INSTRUCTIONS, BOP constants</td></tr>
+          <tr><td><code>TestCalibratedSystem</code></td><td>System prompt ≥600 examples, full dataset coverage</td></tr>
+        </table>
       </div>
+    </div>
 
-      <!-- 12 -->
-      <div class="docs-section" id="doc-llm">
-        <h2>12. LLM Keyword Calibration</h2>
-        <p>YOLOE matching quality depends heavily on the keyword:</p>
-        <ul>
-          <li><code>"can"</code> → YOLOE finds 0% of LINEMOD cans (too generic)</li>
-          <li><code>"tin can"</code> → much better recall</li>
-          <li><code>"cylindrical steel can"</code> → highest confidence detections</li>
-        </ul>
-        <p>The <strong>CALIBRATED_SYSTEM</strong> prompt (1195 examples) teaches the LLM to produce YOLOE-friendly keywords covering LINEMOD, YCB-Video, HOPE, HomebrewedDB, T-LESS, ITODD, ContactPose, HANDAL, NOCS and robotic instructions.</p>
-        <div class="docs-table-wrap">
-          <table class="docs-table">
-            <tr><th>Dataset</th><th>Objects</th><th>Examples</th></tr>
-            <tr><td>LINEMOD (15 obj)</td><td>ape, benchvise, bowl, can, driller…</td><td>~120</td></tr>
-            <tr><td>YCB-Video (21 obj)</td><td>mustard, soup can, sugar box…</td><td>~200</td></tr>
-            <tr><td>HOPE grocery (28 obj)</td><td>alphabet soup, butter, cherries…</td><td>~112</td></tr>
-            <tr><td>T-LESS industrial (30 obj)</td><td>gray flat disc, L bracket, gear…</td><td>~90</td></tr>
-            <tr><td>Robotic / complex</td><td>contextual, ambiguous, natural</td><td>~284</td></tr>
-          </table>
-        </div>
+    <!-- 12 -->
+    <div class="docs-section" id="doc-llm">
+      <h2>12. LLM Keyword Calibration</h2>
+      <p>YOLOE matching quality depends on keyword quality:</p>
+      <ul>
+        <li><code>"can"</code> → 0% detection (too generic)</li>
+        <li><code>"tin can"</code> → better recall</li>
+        <li><code>"cylindrical steel can"</code> → highest confidence</li>
+      </ul>
+      <p>The <strong>CALIBRATED_SYSTEM</strong> prompt (1195 examples) teaches Mistral to produce YOLOE-friendly keywords for LINEMOD, YCB-Video, HOPE, HomebrewedDB, T-LESS, ITODD, ContactPose, HANDAL, NOCS, and robotic instructions.</p>
+      <div class="docs-table-wrap">
+        <table class="docs-table">
+          <tr><th>Dataset</th><th>Objects</th><th>Examples</th></tr>
+          <tr><td>LINEMOD (15 obj)</td><td>ape, benchvise, bowl, can, driller…</td><td>~120</td></tr>
+          <tr><td>YCB-Video (21 obj)</td><td>mustard, soup can, sugar box…</td><td>~200</td></tr>
+          <tr><td>HOPE grocery (28 obj)</td><td>alphabet soup, butter, cherries…</td><td>~112</td></tr>
+          <tr><td>T-LESS industrial (30 obj)</td><td>gray flat disc, L bracket, gear…</td><td>~90</td></tr>
+          <tr><td>Robotic / complex</td><td>contextual, ambiguous, natural</td><td>~284</td></tr>
+        </table>
       </div>
+    </div>
 
-      <!-- 13 -->
-      <div class="docs-section" id="doc-limits">
-        <h2>13. Design Decisions & Limitations</h2>
-        <h3>LINEMOD detection is low for some objects</h3>
-        <ul>
-          <li>Plain white backgrounds confuse YOLOE (trained on natural scenes)</li>
-          <li>LLM often outputs single-word keywords despite examples</li>
-          <li>Fallback to GT mask keeps ADD valid; Det_Rate reflects real capability</li>
-        </ul>
-        <h3>Dataset-specific YOLOE parameters</h3>
-        <div class="docs-table-wrap">
-          <table class="docs-table">
-            <tr><th>Dataset</th><th>conf</th><th>conf_fallbacks</th><th>use_first_det</th><th>bgr_input</th></tr>
-            <tr><td>LINEMOD</td><td>0.1</td><td>—</td><td>False</td><td>False</td></tr>
-            <tr><td>YCB-Video</td><td>None</td><td>—</td><td>True</td><td>False</td></tr>
-            <tr><td>HO3D</td><td>0.1</td><td>(0.05, 0.03)</td><td>True</td><td>True</td></tr>
-          </table>
-        </div>
-        <div class="callout"><strong>Note:</strong> Changing these parameters alters results. They reproduce the original pipeline behaviour validated during development.</div>
+    <!-- 13 -->
+    <div class="docs-section" id="doc-limits">
+      <h2>13. Design Decisions & Limitations</h2>
+      <h3>LINEMOD detection</h3>
+      <ul>
+        <li>Plain white backgrounds confuse YOLOE (trained on natural scenes)</li>
+        <li>LLM often outputs single-word keywords despite examples</li>
+        <li>Fallback to GT mask keeps ADD valid; Det_Rate reflects real capability</li>
+      </ul>
+      <h3>Dataset-specific YOLOE parameters</h3>
+      <div class="docs-table-wrap">
+        <table class="docs-table">
+          <tr><th>Dataset</th><th>conf</th><th>conf_fallbacks</th><th>use_first_det</th><th>bgr_input</th></tr>
+          <tr><td>LINEMOD</td><td>0.1</td><td>—</td><td>False</td><td>False</td></tr>
+          <tr><td>YCB-Video</td><td>None</td><td>—</td><td>True</td><td>False</td></tr>
+          <tr><td>HO3D</td><td>0.1</td><td>(0.05, 0.03)</td><td>True</td><td>True</td></tr>
+        </table>
       </div>
+    </div>
 
-      <!-- 14 -->
-      <div class="docs-section" id="doc-repro">
-        <h2>14. Reproducing Results</h2>
-        <h3>Requirements</h3>
-        <ul>
-          <li>Container <code>any6d_active</code> running with datasets at <code>/workspace/dataset/</code></li>
-          <li>Ollama with <code>mistral:latest</code> at <code>http://172.18.0.1:11434</code></li>
-          <li>YOLOE weights at <code>/workspace/yoloe/yoloe-26l-seg.pt</code></li>
-        </ul>
-        <h3>HO3D (full)</h3>
-        <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>docker exec any6d_active \
+    <!-- 14 -->
+    <div class="docs-section" id="doc-repro">
+      <h2>14. Reproducing Results</h2>
+      <h3>Requirements</h3>
+      <ul>
+        <li>Container <code>any6d_active</code> with datasets at <code>/workspace/dataset/</code></li>
+        <li>Ollama with <code>mistral:latest</code> at <code>http://172.18.0.1:11434</code></li>
+        <li>YOLOE weights at <code>/workspace/yoloe/yoloe-26l-seg.pt</code></li>
+      </ul>
+      <h3>HO3D (full)</h3>
+      <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>docker exec any6d_active \
     /opt/conda/envs/Any6D/bin/python3 \
     /workspace/pipeline_scripts/run_full_pipeline_ho3d.py \
     2>&1 | tee /tmp/ho3d_repro.log</div>
-        <h3>LINEMOD (3 representative objects)</h3>
-        <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>docker exec any6d_active \
+      <h3>LINEMOD (3 objects)</h3>
+      <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>docker exec any6d_active \
     /opt/conda/envs/Any6D/bin/python3 \
     /workspace/pipeline_scripts/run_full_pipeline_linemod.py \
     --obj_ids 5 8 12 \
     2>&1 | tee /tmp/lm_repro.log</div>
-        <h3>YCB-Video (mustard bottle)</h3>
-        <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>docker exec any6d_active \
+      <h3>YCB-Video (mustard bottle)</h3>
+      <div class="docs-pre"><button class="copy-btn" onclick="copyCode(this)">copy</button>docker exec any6d_active \
     /opt/conda/envs/Any6D/bin/python3 \
     /workspace/pipeline_scripts/run_full_pipeline_ycbv.py \
     --obj_ids 6 \
     2>&1 | tee /tmp/ycbv_repro.log</div>
-        <p>Results appear in <code>./results/&lt;dataset&gt;_pipeline/&lt;timestamp&gt;/</code>. Compare JSON summaries with Section 10 values.</p>
-      </div>
+      <p>Results in <code>./results/&lt;dataset&gt;_pipeline/&lt;timestamp&gt;/</code>. Compare JSON summaries with Section 10 values.</p>
+    </div>
 
-    </div><!-- /docs-content -->
-  </div><!-- /docs-body -->
+  </div><!-- /docs-content -->
 </div><!-- /docs-modal -->
 
 <script>
-/* ── Docs open/close ────────────────────────── */
+/* ── Docs open/close ── */
 function openDocs(e){
   e.preventDefault();
   document.getElementById('docs-overlay').classList.add('open');
@@ -1178,66 +933,87 @@ function closeDocs(){
   document.getElementById('docs-modal').classList.remove('open');
   document.body.style.overflow='';
 }
-function navTo(e, id){
-  e.preventDefault();
-  const el = document.getElementById(id);
-  if(el) el.scrollIntoView({behavior:'smooth'});
-  document.querySelectorAll('.docs-nav a').forEach(a=>a.classList.remove('active'));
-  e.target.classList.add('active');
-}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDocs()});
 
-/* ── Copy button ────────────────────────────── */
+/* ── Tab navigation ── */
+function tabTo(e, id){
+  e.preventDefault();
+  const el = document.getElementById(id);
+  if(el){
+    document.getElementById('docs-content-scroll').scrollTo({top:el.offsetTop-20,behavior:'smooth'});
+  }
+  document.querySelectorAll('.docs-tabs a').forEach(a=>a.classList.remove('active'));
+  e.currentTarget.classList.add('active');
+}
+
+/* Highlight active tab on scroll */
+const docsScroll = document.getElementById('docs-content-scroll');
+if(docsScroll){
+  const sections = document.querySelectorAll('.docs-section');
+  docsScroll.addEventListener('scroll',()=>{
+    let current='';
+    sections.forEach(s=>{
+      if(s.offsetTop - docsScroll.scrollTop <= 80) current = s.id;
+    });
+    document.querySelectorAll('.docs-tabs a').forEach(a=>{
+      const href = a.getAttribute('onclick');
+      if(href && href.includes(current)){
+        a.classList.add('active');
+      } else {
+        a.classList.remove('active');
+      }
+    });
+  });
+}
+
+/* ── Copy button ── */
 function copyCode(btn){
   const pre = btn.closest('.docs-pre');
-  const text = pre.innerText.replace(/^copy\n/,'');
+  const clone = pre.cloneNode(true);
+  clone.querySelectorAll('button').forEach(b=>b.remove());
+  const text = clone.innerText.trim();
   navigator.clipboard.writeText(text).then(()=>{
     btn.textContent='copied!';
     setTimeout(()=>btn.textContent='copy',2000);
   });
 }
 
-/* ── IntersectionObserver — fade-in ─────────── */
+/* ── IntersectionObserver — fade-in ── */
 const obs = new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      e.target.classList.add('visible');
-    }
-  });
-},{threshold:.15});
-
+  entries.forEach(e=>{if(e.isIntersecting) e.target.classList.add('visible')});
+},{threshold:.12});
 document.querySelectorAll(
-  '.fade-up,.arch-step,.arch-arrow,.arch-output,.result-card,.demo-step'
+  '.fade-up,.arch-step,.arch-arrow,.arch-output,.pipeline-img-wrap,.result-card,.demo-step'
 ).forEach(el=>obs.observe(el));
 
-/* ── Counter animation ───────────────────────── */
+/* ── Counter animation ── */
 const counters = document.querySelectorAll('.result-num[data-count]');
-const counterObs = new IntersectionObserver((entries)=>{
+const cObs = new IntersectionObserver((entries)=>{
   entries.forEach(e=>{
-    if(e.isIntersecting){
-      const el = e.target;
-      const target = parseFloat(el.dataset.count);
-      const isFloat = target % 1 !== 0;
-      const duration = 1200;
-      const start = performance.now();
-      function step(now){
-        const progress = Math.min((now-start)/duration,1);
-        const eased = 1-Math.pow(1-progress,3);
-        const val = target * eased;
-        el.textContent = isFloat
-          ? val.toFixed(1) + '%'
-          : Math.round(val) + (target >= 90 && target <= 100 ? '%' : '');
-        if(progress < 1) requestAnimationFrame(step);
-        else el.textContent = isFloat ? target + '%' : (target >= 90 && target <= 100 ? target + '%' : target);
-      }
-      requestAnimationFrame(step);
-      counterObs.unobserve(el);
+    if(!e.isIntersecting) return;
+    const el = e.target;
+    const target = parseFloat(el.dataset.count);
+    const suffix = el.dataset.suffix || '';
+    const isFloat = target % 1 !== 0;
+    const duration = 1400;
+    const start = performance.now();
+    function step(now){
+      const p = Math.min((now-start)/duration,1);
+      const eased = 1-Math.pow(1-p,3);
+      const val = target * eased;
+      const display = isFloat ? val.toFixed(2) : Math.round(val);
+      const pct = !suffix && target >= 40 && target <= 100 ? '%' : suffix;
+      el.textContent = display + pct;
+      if(p < 1) requestAnimationFrame(step);
+      else el.textContent = (isFloat ? target : target) + pct;
     }
+    requestAnimationFrame(step);
+    cObs.unobserve(el);
   });
 },{threshold:.5});
-counters.forEach(c=>counterObs.observe(c));
+counters.forEach(c=>cObs.observe(c));
 
-/* ── Nav scroll shadow ───────────────────────── */
+/* ── Nav shadow on scroll ── */
 window.addEventListener('scroll',()=>{
   document.querySelector('nav').style.boxShadow =
     window.scrollY > 20 ? '0 2px 20px rgba(0,0,0,.08)' : 'none';
